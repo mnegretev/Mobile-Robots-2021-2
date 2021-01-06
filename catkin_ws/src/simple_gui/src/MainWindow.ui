@@ -1,0 +1,534 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>622</width>
+    <height>272</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>JUSTINA GUI - By Marcosoft</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QGroupBox {
+    border: 1px solid gray;
+    border-radius: 9px;
+    margin-top: 0.5em;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 3px 0 3px;
+}
+
+QRadioButton{
+	spacing: 1px;
+}
+QRadioButton::indicator{
+	width: 16px;
+	height: 16px;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QGroupBox" name="gbNavig">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>301</width>
+      <height>261</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="title">
+     <string>Path planning and tracking</string>
+    </property>
+    <widget class="QPushButton" name="navBtnExecPath">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>55</y>
+       <width>81</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Execute
+Path</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="navTxtStartPose">
+     <property name="geometry">
+      <rect>
+       <x>89</x>
+       <y>20</y>
+       <width>111</width>
+       <height>23</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="navTxtGoalPose">
+     <property name="geometry">
+      <rect>
+       <x>89</x>
+       <y>45</y>
+       <width>111</width>
+       <height>23</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="navLblStartPose">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>81</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Start Pose:</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="navBtnCalcPath">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>20</y>
+       <width>81</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Calc Path</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="navLblGoalPose">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>45</y>
+       <width>81</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Goal Pose:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="navLblMove">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>220</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Simple Move:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="navTxtMove">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>220</y>
+       <width>151</width>
+       <height>27</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="navCmbMethod">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>70</y>
+       <width>111</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>BFS</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>DFS</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Dijkstra</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>A*</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="navLblGoalPose_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>81</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Method:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="navLblSmoothing">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>140</y>
+       <width>81</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Smoothing:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="navLblNearness">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>190</y>
+       <width>81</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Cost:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="navTxtNearness">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>190</y>
+       <width>81</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0.5</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="navLblInflate">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>165</y>
+       <width>71</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Inflation:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="navTxtInflation">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>165</y>
+       <width>81</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0.3</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="navLblSmoothAlpha">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>165</y>
+       <width>51</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Alpha:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="navTxtSmoothAlpha">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>165</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0.1</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="navTxtSmoothBeta">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>190</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0.9</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="navLblSmoothBeta">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>190</y>
+       <width>51</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Beta:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="navLblRadius">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>140</y>
+       <width>121</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Augmented Map:</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="navRbOmnidirectional">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>100</y>
+       <width>131</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Omnidirec&amp;tional</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="navRbDifferential">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>100</y>
+       <width>117</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&amp;Differential</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>0</y>
+      <width>301</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Send Cmd Vel</string>
+    </property>
+    <widget class="QPushButton" name="btnCmdVel">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>115</y>
+       <width>101</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Move Base</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="txtLinearY">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>55</y>
+       <width>81</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnBwd">
+     <property name="geometry">
+      <rect>
+       <x>65</x>
+       <y>80</y>
+       <width>50</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnLeft">
+     <property name="geometry">
+      <rect>
+       <x>5</x>
+       <y>50</y>
+       <width>50</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnRight">
+     <property name="geometry">
+      <rect>
+       <x>125</x>
+       <y>50</y>
+       <width>50</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btnFwd">
+     <property name="geometry">
+      <rect>
+       <x>65</x>
+       <y>20</y>
+       <width>50</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>32</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="txtLinearX">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>25</y>
+       <width>81</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>30</y>
+       <width>16</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>X:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>90</y>
+       <width>16</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>W:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="txtAngular">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>85</y>
+       <width>81</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>60</y>
+       <width>16</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Y:</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

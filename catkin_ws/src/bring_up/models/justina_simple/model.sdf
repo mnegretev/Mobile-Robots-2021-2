@@ -1,0 +1,630 @@
+<sdf version='1.6'>
+  <model name='justina_simple'>
+    <link name='base_link'>
+      <pose frame=''>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose frame=''>0.001268 0 0.809239 0 -0 0</pose>
+        <mass>13.8</mass>
+        <inertia>
+          <ixx>4.08206</ixx>
+          <ixy>-1.50756e-09</ixy>
+          <ixz>-0.000861703</ixz>
+          <iyy>4.02369</iyy>
+          <iyz>1.14605e-09</iyz>
+          <izz>0.289949</izz>
+        </inertia>
+      </inertial>
+      <collision name='base_link_collision'>
+        <pose frame=''>0 0 0.235 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.42 0.42 0.2</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__laser_link_collision_1'>
+        <pose frame=''>0.1 0 0.44 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.08 0.08 0.1</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__spine_link_collision_2'>
+        <pose frame=''>0 0 0.41 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.07 0.045 0.7</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__waist_link_collision_3'>
+        <pose frame=''>0 0 0.77 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.06</length>
+            <radius>0.08</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__waist_link_collision_4'>
+        <pose frame=''>0 0 0.83 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.08</length>
+            <radius>0.04</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__waist_link_collision_5'>
+        <pose frame=''>0 0 0.945 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.055 0.08 0.15</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__waist_link_collision_6'>
+        <pose frame=''>0 0 1.155 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.27</length>
+            <radius>0.02</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__shoulders_link_collision_7'>
+        <pose frame=''>0 0 1.23 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.045 0.43 0.045</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__head_link1_collision_8'>
+        <pose frame=''>0 0 1.335 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.04 0.04 0.06</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__head_link2_collision_9'>
+        <pose frame=''>0.006844 0 1.39112 0 0.65 0</pose>
+        <geometry>
+          <box>
+            <size>0.03 0.03 0.08</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__kinect_link_collision_10'>
+        <pose frame=''>0.025 0 1.415 -2.2208 -2e-06 -1.5708</pose>
+        <geometry>
+          <box>
+            <size>0.207 0.04 0.058</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__shoulders_left_link_collision_11'>
+        <pose frame=''>0 0.23 1.195 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.04 0.1 0.08</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__shoulders_right_link_collision_12'>
+        <pose frame=''>0 -0.23 1.195 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.04 0.1 0.08</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__wheel_back_collision_13'>
+        <pose frame=''>-0.24 0 0.065 1.5708 -0 1.5708</pose>
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.06</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__wheel_front_collision_14'>
+        <pose frame=''>0.24 0 0.065 1.5708 -0 1.5708</pose>
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.06</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__wheel_left_collision_15'>
+        <pose frame=''>0 -0.24 0.065 1.5708 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.06</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__wheel_right_collision_16'>
+        <pose frame=''>0 0.24 0.065 1.5708 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.06</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='base_link_visual'>
+        <pose frame=''>0 0 0.235 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.42 0.42 0.2</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Orange</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__laser_link_visual_1'>
+        <pose frame=''>0.1 0 0.44 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.08 0.08 0.1</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__spine_link_visual_2'>
+        <pose frame=''>0 0 0.41 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.07 0.045 0.7</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/SkyBlue</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__waist_link_visual_3'>
+        <pose frame=''>0 0 0.77 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.06</length>
+            <radius>0.08</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Grey</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__waist_link_visual_4'>
+        <pose frame=''>0 0 0.83 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.08</length>
+            <radius>0.04</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Grey</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__waist_link_visual_5'>
+        <pose frame=''>0 0 0.945 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.055 0.08 0.15</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Grey</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__waist_link_visual_6'>
+        <pose frame=''>0 0 1.155 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.27</length>
+            <radius>0.02</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Grey</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__shoulders_link_visual_7'>
+        <pose frame=''>0 0 1.23 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.045 0.43 0.045</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Red</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__head_link1_visual_8'>
+        <pose frame=''>0 0 1.335 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.04 0.04 0.06</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/SkyBlue</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__head_link2_visual_9'>
+        <pose frame=''>0.006844 0 1.39112 0 0.65 0</pose>
+        <geometry>
+          <box>
+            <size>0.03 0.03 0.08</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/SkyBlue</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__kinect_link_visual_10'>
+        <pose frame=''>0.025 0 1.415 -2.2208 -2e-06 -1.5708</pose>
+        <geometry>
+          <box>
+            <size>0.207 0.04 0.058</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__shoulders_left_link_visual_11'>
+        <pose frame=''>0 0.23 1.195 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.04 0.1 0.08</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Orange</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__shoulders_right_link_visual_12'>
+        <pose frame=''>0 -0.23 1.195 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.04 0.1 0.08</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Orange</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__wheel_back_visual_13'>
+        <pose frame=''>-0.24 0 0.065 1.5708 -0 1.5708</pose>
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.06</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__wheel_front_visual_14'>
+        <pose frame=''>0.24 0 0.065 1.5708 -0 1.5708</pose>
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.06</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__wheel_left_visual_15'>
+        <pose frame=''>0 -0.24 0.065 1.5708 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.06</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__wheel_right_visual_16'>
+        <pose frame=''>0 0.24 0.065 1.5708 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.04</length>
+            <radius>0.06</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <velocity_decay/>
+      <velocity_decay/>
+      <velocity_decay/>
+      <sensor name='hokuyo_sensor' type='ray'>
+        <visualize>1</visualize>
+        <update_rate>10</update_rate>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>370</samples>
+              <resolution>0.5</resolution>
+              <min_angle>-1.5708</min_angle>
+              <max_angle>1.5708</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.1</min>
+            <max>10</max>
+            <resolution>0.01</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </ray>
+        <plugin name='gazebo_ros_hokuyo_controller' filename='libgazebo_ros_laser.so'>
+          <topicName>/scan</topicName>
+          <frameName>laser_link</frameName>
+        </plugin>
+        <pose frame=''>0.1 0 0.44 0 -0 0</pose>
+      </sensor>
+      <velocity_decay/>
+      <velocity_decay/>
+      <velocity_decay/>
+      <velocity_decay/>
+      <velocity_decay/>
+      <velocity_decay/>
+      <sensor name='kinect_justina' type='depth'>
+        <update_rate>30</update_rate>
+        <visualize>1</visualize>
+        <always_on>1</always_on>
+        <camera name='__default__'>
+          <horizontal_fov>1.0472</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>B8G8R8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+        </camera>
+        <plugin name='kinect_controller' filename='libgazebo_ros_openni_kinect.so'>
+          <baseline>0.2</baseline>
+          <alwaysOn>1</alwaysOn>
+          <updateRate>0.0</updateRate>
+          <cameraName>kinect</cameraName>
+          <imageTopicName>rgb/image_raw</imageTopicName>
+          <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
+          <depthImageTopicName>depth/image_raw</depthImageTopicName>
+          <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
+          <pointCloudTopicName>points</pointCloudTopicName>
+          <frameName>kinect_link</frameName>
+          <pointCloudCutoffMax>3.5</pointCloudCutoffMax>
+          <pointCloudCutoff>0.5</pointCloudCutoff>
+          <CxPrime>0</CxPrime>
+          <Cx>0</Cx>
+          <Cy>0</Cy>
+          <focalLength>0</focalLength>
+          <hackBaseline>0</hackBaseline>
+        </plugin>
+        <pose frame=''>0.025 0 1.415 0 0.65 0</pose>
+      </sensor>
+      <velocity_decay/>
+      <velocity_decay/>
+      <velocity_decay/>
+      <velocity_decay/>
+      <velocity_decay/>
+      <velocity_decay/>
+      <gravity>1</gravity>
+      <velocity_decay/>
+    </link>
+    <static>0</static>
+    <plugin name='ros_control' filename='libgazebo_ros_control.so'>
+      <robotNamespace>/justina_simple</robotNamespace>
+    </plugin>
+  </model>
+</sdf>

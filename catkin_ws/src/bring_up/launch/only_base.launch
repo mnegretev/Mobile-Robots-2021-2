@@ -1,0 +1,12 @@
+<launch>
+  <param name="robot_description" textfile="$(find bring_up)/urdf/justina_base.urdf" />
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find bring_up)/rviz/only_base.rviz"/>
+  <node name="simple_gui" pkg="simple_gui" type="simple_gui_node"/>
+  <node name="mobile_base" pkg="mobile_base_simul" type="simple_base_simul.py"/>
+  <node name="map_server" pkg="map_server" type="map_server" output="screen" args="$(find bring_up)/maps/appartment.yaml"/>
+  <node name="amcl" pkg="amcl" type="amcl" output="screen"/>
+  <node name="laser_simulator" pkg="laser_simulator" type="laser_simulator" output="screen">
+    <param name="noise" value="0.05"/>
+  </node>
+</launch>
