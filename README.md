@@ -5,7 +5,7 @@ Material para el curso de Robots Móviles de la Facultad de Ingeniería, UNAM, S
 ## Requerimientos
 
 * Ubuntu 18.04
-* ROS Melodic
+* ROS Melodic http://wiki.ros.org/melodic/Installation/Ubuntu
 
 ## Instalación
 
