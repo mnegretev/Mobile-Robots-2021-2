@@ -12,6 +12,7 @@ sudo apt-get install ros-melodic-gazebo-plugins
 sudo apt-get install ros-melodic-gazebo-ros
 sudo apt-get install ros-melodic-gazebo-ros-control
 sudo apt-get install ros-melodic-gazebo-ros-pkgs
+sudo apt-get install ros-melodic-ros-numpy
 sudo apt-get install swig
 sudo apt-get install python-pip
 sudo apt-get install portaudio19-dev
