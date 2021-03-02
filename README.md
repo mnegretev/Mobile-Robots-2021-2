@@ -13,7 +13,7 @@ Nota: se asume que ya se tiene instalado Ubuntu y ROS.
 
 * $ cd
 * $ git clone https://github.com/mnegretev/Mobile-Robots-2021-2
-* $ cd Mobile-Robots-2021-1
+* $ cd Mobile-Robots-2021-2
 * $ ./Setup.sh
 * $ cd catkin_ws
 * $ catkin_make -j2 -l2
@@ -21,8 +21,8 @@ Nota: se asume que ya se tiene instalado Ubuntu y ROS.
 Para probar que todo se instaló y compiló correctamente:
 
 * $ cd 
-* $ export GAZEBO_MODEL_PATH=~/Mobile-Robots-2021-1/catkin_ws/src/bring_up/models/
-* $ source Mobile-Robots-2021-1/catkin_ws/devel/setup.bash
+* $ export GAZEBO_MODEL_PATH=~/Mobile-Robots-2021-2/catkin_ws/src/bring_up/models/
+* $ source Mobile-Robots-2021-2/catkin_ws/devel/setup.bash
 * $ roslaunch bring_up justina_simple.launch
 
 Nota: Se asume que el repositorio se descargó en la carpeta home. Si se descargó en otra ruta, es necesario realizar los cambios correspondientes en los comandos. 
