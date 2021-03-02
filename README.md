@@ -12,7 +12,7 @@ Material para el curso de Robots Móviles de la Facultad de Ingeniería, UNAM, S
 Nota: se asume que ya se tiene instalado Ubuntu y ROS.
 
 * $ cd
-* $ git clone https://github.com/mnegretev/Mobile-Robots-2021-1
+* $ git clone https://github.com/mnegretev/Mobile-Robots-2021-2
 * $ cd Mobile-Robots-2021-1
 * $ ./Setup.sh
 * $ cd catkin_ws
