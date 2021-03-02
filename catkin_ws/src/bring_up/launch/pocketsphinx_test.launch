@@ -1,0 +1,15 @@
+<launch>
+  <node name="speech_recog" pkg="pocketsphinx" type="asr_test.py" output="screen">
+    <remap from="jsgf_audio" to="sphinx_audio" />
+    <param name="gram" value="$(find pocketsphinx)/vocab/movement"/>
+    <param name="dict" value="$(find pocketsphinx)/vocab/movement.dic"/>
+    <param name="grammar" value="movement"/>
+    <param name="rule" value="mvn"/>
+    <param name="lm" value=":default"/>
+    <param name="hmm" value=":default"/>
+  </node>
+
+  <node name="audio_control" pkg="pocketsphinx" type="send_audio.py" output="screen">
+    <param name="input" value=":default"/>
+  </node>
+</launch>
