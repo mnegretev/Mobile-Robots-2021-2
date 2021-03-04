@@ -59,6 +59,7 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>tf</build_depend>
   <build_depend>visualization_msgs</build_depend>
+  <build_depend>occupancy_grid_utils</build_depend>
   <build_export_depend>gazebo_msgs</build_export_depend>
   <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>nav_msgs</build_export_depend>
@@ -68,7 +69,7 @@
   <build_export_depend>sensor_msgs</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
   <build_export_depend>tf</build_export_depend>
-  <build_export_depend>visualization_msgs</build_export_depend>
+  <build_export_depend>occupancy_grid_utils</build_export_depend>
   <exec_depend>gazebo_msgs</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>nav_msgs</exec_depend>
@@ -79,6 +80,7 @@
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>tf</exec_depend>
   <exec_depend>visualization_msgs</exec_depend>
+  <exec_depend>occupancy_grid_utils</exec_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
