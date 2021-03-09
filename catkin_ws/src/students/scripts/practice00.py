@@ -12,36 +12,48 @@
 import rospy
 from sensor_msgs.msg   import LaserScan
 from geometry_msgs.msg import Twist
+import numpy
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "Rojas Mosqueda Axel Javier"
 
-def callback_laser_scan(msg):
-    #
-    # TODO:
-    # Do something to detect if there is an obstacle in front of the robot.
-    #
-    return
-
-def main():
-    print "PRACTICE 00 - " + NAME
-    rospy.init_node("practice00")
-    rospy.Subscriber("/scan", LaserScan, callback_laser_scan)
-    pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
-    loop = rospy.Rate(10)
+class Robot:
     
-    while not rospy.is_shutdown():
-        #
-        # TODO:
-        # Declare a Twist message and assign the appropiate speeds:
-        # Move forward if there is no obstacle in front and stop otherwise.
-        # Publish the message.
-        #
-        loop.sleep()
+    
+    
+    def __init__(self,lecturas):
+        self.lecturas_escaner=lecturas
+        
+        
+    def callback_laser_scan(self,msg):
+        self.lecturas_escaner=list(msg.ranges)
+        self.punto_medio=(len(self.lecturas_escaner)/2)
+        
+       
+    def main(self):
+        
+        print "PRACTICE 00 - " + NAME
+        rospy.init_node("practice00")
+        rospy.Subscriber("/scan", LaserScan, self.callback_laser_scan)
+        self.pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+        loop = rospy.Rate(10)
+        self.twist=Twist()
+        while not rospy.is_shutdown():
+            if len(self.lecturas_escaner)>0:
+                if self.lecturas_escaner[self.punto_medio]>1:
+                    self.twist.linear.x=0.2
+                elif self.lecturas_escaner[self.punto_medio]<=1:
+                    self.twist.linear.x=0
+                    
+                
+            
+            self. pub_cmd_vel.publish(self.twist)    
+            loop.sleep()
 
 
 if __name__ == '__main__':
     try:
-        main()
+        Robot1=Robot([])
+        Robot1.main()
     except rospy.ROSInterruptException:
         pass
     
