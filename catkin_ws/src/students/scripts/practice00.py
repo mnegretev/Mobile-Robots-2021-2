@@ -26,7 +26,6 @@ class Robot:
         
     def callback_laser_scan(self,msg):
         self.lecturas_escaner=list(msg.ranges)
-        self.punto_medio=(len(self.lecturas_escaner)/2)
         
        
     def main(self):
@@ -39,9 +38,9 @@ class Robot:
         self.twist=Twist()
         while not rospy.is_shutdown():
             if len(self.lecturas_escaner)>0:
-                if self.lecturas_escaner[self.punto_medio]>1:
-                    self.twist.linear.x=0.2
-                elif self.lecturas_escaner[self.punto_medio]<=1:
+                if self.lecturas_escaner[len(self.lecturas_escaner)/2]>1.0:
+                    self.twist.linear.x=0.5
+                elif self.lecturas_escaner[len(self.lecturas_escaner)/2]<=1.0:
                     self.twist.linear.x=0
                     
                 
