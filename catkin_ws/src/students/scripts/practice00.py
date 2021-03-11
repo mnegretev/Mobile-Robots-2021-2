@@ -14,7 +14,7 @@ from sensor_msgs.msg   import LaserScan
 from geometry_msgs.msg import Twist
 import numpy
 
-NAME = "Rojas Mosqueda Axel Javier"
+NAME = "ROJAS MOSQUEDA AXEL JAVIER"
 
 class Robot:
     
