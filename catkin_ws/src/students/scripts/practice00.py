@@ -33,7 +33,7 @@ def main():
     loop = rospy.Rate(10)
     
     obstacle = False
-    cdm_vel = Twist()
+    cmd_vel = Twist()
     while not rospy.is_shutdown():
         #
         # TODO:
