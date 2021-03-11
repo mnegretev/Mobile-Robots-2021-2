@@ -22,17 +22,18 @@ def callback_laser_scan(msg):
     #
 	global obstacle
 	obstacle = msg.ranges[len(msg.ranges)//2] < 1.0
-    return
+	return
 
 def main():
-    print "PRACTICE 00 - " + NAME
-    rospy.init_node("practice00")
-    rospy.Subscriber("/scan", LaserScan, callback_laser_scan)
-    pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
-    loop = rospy.Rate(10)
-    obstacle = False
+	print "PRACTICE 00 - " + NAME
+	rospy.init_node("practice00")
+	rospy.Subscriber("/scan", LaserScan, callback_laser_scan)
+	pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+	loop = rospy.Rate(10)
+	obstacle = False
 	cmd_vel = Twist()
-    while not rospy.is_shutdown():
+
+	while not rospy.is_shutdown():
         #
         # TODO:
         # Declare a Twist message and assign the appropiate speeds:
