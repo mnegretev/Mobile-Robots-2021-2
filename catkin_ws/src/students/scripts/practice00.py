@@ -13,7 +13,7 @@ import rospy
 from sensor_msgs.msg   import LaserScan
 from geometry_msgs.msg import Twist
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "LOPEZ_FERNANDO"
 
 def callback_laser_scan(msg):
     #
@@ -43,7 +43,7 @@ def main():
         # Publish the message.
         #
         cmd_vel.linear.x = 0 if obstacle else 0.5         
-        pub_cmd_vel.pubish(cmd_vel)
+        pub_cmd_vel.publish(cmd_vel)
         loop.sleep()
 
 
