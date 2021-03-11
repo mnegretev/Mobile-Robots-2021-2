@@ -38,9 +38,9 @@ class Robot:
         self.twist=Twist()
         while not rospy.is_shutdown():
             if len(self.lecturas_escaner)>0:
-                if self.lecturas_escaner[len(self.lecturas_escaner)/2]>1.0:
+                if self.lecturas_escaner[len(self.lecturas_escaner)//2]>1.0:
                     self.twist.linear.x=0.5
-                elif self.lecturas_escaner[len(self.lecturas_escaner)/2]<=1.0:
+                elif self.lecturas_escaner[len(self.lecturas_escaner)//2]<=1.0:
                     self.twist.linear.x=0
                     
                 
