@@ -20,7 +20,8 @@ def callback_laser_scan(msg):
     # TODO:
     # Do something to detect if there is an obstacle in front of the robot.
     #
-    global obstacle msg.ranges[len(msg.ranges)//2] < 1.0
+    global obstacle
+    obstacle = msg.ranges[len(msg.ranges)//2] < 1.0
     return
 
 def main():
