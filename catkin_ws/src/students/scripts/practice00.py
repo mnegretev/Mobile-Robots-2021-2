@@ -8,32 +8,30 @@
 # detects an obstacle in front of it.
 # Required publishers and subscribers are already declared and initialized.
 #
-
 import rospy
 from sensor_msgs.msg   import LaserScan
 from geometry_msgs.msg import Twist
-
 NAME = "MENDOZA SUAREZ"
-
 def callback_laser_scan(msg):
     #
     # TODO:
     # Do something to detect if there is an obstacle in front of the robot.
     #
     global obstacle
-    obstacle = msg.ranges[len(msg.ranges)//2]<1.0
+    obstacle = msg.ranges[len(msg.ranges)//2] < 1.0
     return
 
 def main():
-	global obstacle
+    global obstacle
     print "PRACTICE 00 - " + NAME
     rospy.init_node("practice00")
     rospy.Subscriber("/scan", LaserScan, callback_laser_scan)
     pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
     loop = rospy.Rate(10)
-    
-	obstacle = False	
-	cmd_vel = Twist()
+
+
+    obstacle = False
+    cmd_vel = Twist()
     while not rospy.is_shutdown():
         #
         # TODO:
@@ -51,4 +49,3 @@ if __name__ == '__main__':
         main()
     except rospy.ROSInterruptException:
         pass
-    
