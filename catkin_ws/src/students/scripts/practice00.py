@@ -25,12 +25,15 @@ def callback_laser_scan(msg):
     return
 
 def main():
+	global obstacle
     print "PRACTICE 00 - " + NAME
     rospy.init_node("practice00")
     rospy.Subscriber("/scan", LaserScan, callback_laser_scan)
     pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
     loop = rospy.Rate(10)
     
+	obstacle = False	
+	cmd_vel = Twist()
     while not rospy.is_shutdown():
         #
         # TODO:
