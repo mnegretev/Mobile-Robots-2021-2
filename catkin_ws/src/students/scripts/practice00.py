@@ -13,7 +13,7 @@ import rospy
 from sensor_msgs.msg   import LaserScan
 from geometry_msgs.msg import Twist
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "GUZMAN_SANTIAGO "
 
 def callback_laser_scan(msg):
     #
@@ -45,3 +45,4 @@ if __name__ == '__main__':
     except rospy.ROSInterruptException:
         pass
     
+
