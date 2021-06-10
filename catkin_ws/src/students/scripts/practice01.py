@@ -65,7 +65,7 @@ def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
 	while[parent_nodes[r,c][0], parent_nodes[r,c][1]]!=[-1,-1]:
 		path.insert(0,[r,c])
 		[r,c]=parent_nodes[r,c]
-	print("Path calculated by Dijsktra afer "+str(steps)+"steps")
+	print("Path calculated by Dijsktra afer "+str(steps)+" steps")
 	return path
 
 def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
@@ -101,10 +101,10 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
 			if grid_map[nr,nc]!=0 or in_closed_list[nr,nc]:
 				continue
 			g=g_values[r,c]+1+cost_map[nr][nc]
-			hr=goal_r-r
+			hr=goal_r-nr
 			if(hr<0):
 				hr=-hr
-			hc=goal_c-c
+			hc=goal_c-nc
 			if(hc<0):
 				hc=-hc
 			h=hr+hc
@@ -125,7 +125,7 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
 	while[parent_nodes[r,c][0], parent_nodes[r,c][1]]!=[-1,-1]:
 		path.insert(0,[r,c])
 		[r,c]=parent_nodes[r,c]
-	print("Path calculated by A* afer "+str(steps)+"steps")
+	print("Path calculated by A* afer "+str(steps)+" steps")
 	return path
 
 def get_maps():
