@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+# coding=utf-8
 # AUTONOMOUS MOBILE ROBOTS - UNAM, FI, 2021-2
 # PRACTICE 2 - INFLATION AND COST MAPS
 #
@@ -35,37 +35,54 @@ from nav_msgs.srv import GetMap
 from nav_msgs.srv import GetMapResponse
 from nav_msgs.srv import GetMapRequest
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "ROJAS MOSQUEDA AXEL JAVIER"
 static_map = None
 
 def get_inflated_map(static_map, inflation_cells):
     print("Inflating map by " + str(inflation_cells) + " cells")
     inflated = numpy.copy(static_map)
     [height, width] = static_map.shape
-    #
-    # TODO:
     # Write the code necessary to inflate the obstacles in the map a radius
     # given by 'inflation_cells'
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
-    
+    for i in range(height):
+        for j in range(width):
+            if static_map[i,j]>0:#checamos para cada punto del mapa si esta ocupado y si lo esta entonces inflamos
+                for k1 in range(i-inflation_cells,i+inflation_cells+1):#Aqui voy a iterar para inflar las filas
+                    for k2 in range(j-inflation_cells,j+inflation_cells+1):#Aqui para inflar las columnas
+                        inflated[k1,k2]=static_map[i,j]#Con k1 y k2 delimito el cuadrado que voy a llenar y marco como ocupada el cuadro al rededor del punto segun el numero de celdas que desean
+                        
+                
     return inflated
 
 def get_cost_map(static_map, cost_radius):
-    print "Calculating cost map with " +str(cost_radius) + " cells"
+    print ("Calculating cost map with " +str(cost_radius) + " cells\n")
     cost_map = numpy.copy(static_map)
     [height, width] = static_map.shape
     #
-    # TODO:
+    
     # Write the code necessary to calculate a cost map of the give map.
     # Cost must be calculated a number of 'cost_radius' cells around the occupied space.
     # Cost must increase when distance to obstacles decreases, and must be zero for all
     # cells farther than 'cost_radius' cells from the obstacles. 
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
-    #
+    
+    for i in range(height):
+        for j in range(width):
+            if static_map[i,j]>0:#checamos para cada punto del mapa si esta ocupado y si lo esta entonces inflamos
+                for k1 in range(-cost_radius,cost_radius+1):#Voy a ir de menos el radio hasta más el radio
+                    for k2 in range(-cost_radius,cost_radius+1):#Aqui para inflar las columnas
+                        cost=cost_radius-max(abs(k1),abs(k2))#Se resta el radio de costo a la cordenada en valor absoluto mayor 
+                        if cost>cost_map[i+k1,i+k2]:#Si el costo es mayor a el valor que tenia la celda entonces si la pongo, si no es así, se queda igual
+                            cost_map[i+k1,i+k2]=cost#Con k1 y k2 delimito el cuadrado que voy a llenar y voy a tener que comparar para ver si sustituyo
+    
+    
+    print(cost_map)                
     return cost_map
+
 
 def callback_inflated_map(req):
     global static_map, inflation_radius
@@ -93,7 +110,7 @@ def callback_cost_map(req):
     
 def main():
     global static_map, inflation_radius, cost_radius
-    print "PRACTICE 02 - " + NAME
+    print ("PRACTICE 02 - " + NAME)
     rospy.init_node("practice02")
     rospy.Service('/inflated_map', GetMap, callback_inflated_map)
     rospy.Service('/cost_map', GetMap, callback_cost_map)
