@@ -149,7 +149,7 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
             if not in_open_list[nr,nc]:
                 in_open_list[nr,nc] = True
                 #Se agrega a la lista el siguiente nodo
-                    #aquí nos guiaremos del nodo con menor valor f
+                    #aqui nos guiaremos del nodo con menor valor f
                 heapq.heappush(open_list, (f, [nr,nc]))
             steps+=1
             
