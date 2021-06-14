@@ -49,7 +49,7 @@ def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
 		for [nr,nc] in neighbors:
 			if grid_map[nr,nc]!=0 or in_closed_list[nr,nc]:
 				continue
-			g=g_values[r,c]+1+cost_map[nr][nc]
+			g=g_values[r,c]+1+cost_map[nr,nc]
 			if g<g_values[nr,nc]:
 				g_values[nr,nc]	=g
 				parent_nodes[nr,nc]=[r,c]
@@ -100,7 +100,7 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
 		for [nr,nc] in neighbors:
 			if grid_map[nr,nc]!=0 or in_closed_list[nr,nc]:
 				continue
-			g=g_values[r,c]+1+cost_map[nr][nc]
+			g=g_values[r,c]+1+cost_map[nr,nc]
 			hr=goal_r-nr
 			if(hr<0):
 				hr=-hr
