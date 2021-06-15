@@ -20,6 +20,7 @@ def callback_laser_scan(msg):
     # TODO:
     # Do something to detect if there is an obstacle in front of the robot.
     #
+    print(msg.angle_min)
     return
 
 def main():
