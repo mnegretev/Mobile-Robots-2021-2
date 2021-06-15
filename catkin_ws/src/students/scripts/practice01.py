@@ -18,7 +18,7 @@ from nav_msgs.msg import Path
 from nav_msgs.srv import *
 from collections import deque
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "HERNANDEZ_LUVIANO"
 
 def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
@@ -31,7 +31,48 @@ def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # Documentation to implement priority queues in python can be found in
     # https://docs.python.org/2/library/heapq.html
     #
-    
+    g_values        = numpy.full(grid_map.shape, sys.maxint)
+    parent_nodes    = numpy.full((grid_map.shape[0], grid_map.shape[1], 2), -1)
+    in_open_list    = numpy.full(grid_map.shape, False)
+    in_closed_list  = numpy.full(grid_map.shape, False)
+    steps = 0
+
+    open_list = []
+    heapq.heappush(open_list, (0,[start_r, start_c]))
+    g_values[start_r, start_c] = 0
+    in_open_list[start_r, start_c] = True
+    [r,c] = [start_r, start_c]
+
+    while len(open_list) > 0 and [r,c] != [goal_r, goal_c]:
+        [r,c] = heapq.heappop(open_list)[1]
+        in_closed_list[r,c] = True
+        neighbors = [[r+1,c], [r-1,c], [r,c+1], [r,c-1]]
+        for [nr,nc] in neighbors:
+            if grid_map[nr,nc] != 0 or in_closed_list[nr,nc]:
+                continue
+            g = g_values[r,c] + 1 + cost_map[r,c]
+            if g < g_values[nr,nc]:
+                g_values[nr,nc] = g
+                parent_nodes[nr,nc] = [r,c]
+            if not in_open_list[nr,nc]:
+                in_open_list[nr,nc] = True
+                heapq.heappush(open_list, (g, [nr,nc]))
+                steps+=1
+
+    if[r,c] != [goal_r,goal_c]:
+        print("Can't calculate path by Dijsktra")
+        return []
+    path = []
+    while [parent_nodes[r,c][0], parent_nodes[r,c][1]] != [-1,-1]:
+        path.insert(0, [r,c])
+        [r,c] = parent_nodes[r,c]
+    print("Steps " + str(steps))
+
+    return path
+
+def manhattan(start_r, start_c, goal_r, goal_c):
+    d = abs(start_r-goal_r) + abs(start_c-goal_c)
+    return d
 
 def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
@@ -45,7 +86,49 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # Documentation to implement priority queues in python can be found in
     # https://docs.python.org/2/library/heapq.html
     #
-    
+    g_values        = numpy.full(grid_map.shape, sys.maxint)
+    f_values        = numpy.full(grid_map.shape, sys.maxint)
+    parent_nodes    = numpy.full((grid_map.shape[0], grid_map.shape[1], 2), -1)
+    in_open_list    = numpy.full(grid_map.shape, False)
+    in_closed_list  = numpy.full(grid_map.shape, False)
+    steps = 0
+
+    open_list = []
+    heapq.heappush(open_list, (0,[start_r, start_c]))
+    g_values[start_r, start_c] = 0
+    f_values[start_r, start_c] = 0
+    in_open_list[start_r, start_c] = True
+    [r,c] = [start_r, start_c]
+
+    while len(open_list) > 0 and [r,c] != [goal_r, goal_c]:
+        [r,c] = heapq.heappop(open_list)[1]
+        in_closed_list[r,c] = True
+        neighbors = [[r+1,c], [r-1,c], [r,c+1], [r,c-1]]
+        for [nr,nc] in neighbors:
+            if grid_map[nr,nc] != 0 or in_closed_list[nr,nc]:
+                continue
+            h = abs(nr-goal_r) + abs(nc-goal_c)
+            g = g_values[r,c] + 1 + cost_map[r,c]
+            f = g+h
+            if g < g_values[nr,nc]:
+                g_values[nr,nc] = g
+                f_values[nr,nc] = f
+                parent_nodes[nr,nc] = [r,c]
+            if not in_open_list[nr,nc]:
+                in_open_list[nr,nc] = True
+                heapq.heappush(open_list, (f, [nr,nc]))
+                steps+=1
+
+    if[r,c] != [goal_r,goal_c]:
+        print("Can't calculate path by Dijsktra")
+        return []
+    path = []
+    while [parent_nodes[r,c][0], parent_nodes[r,c][1]] != [-1,-1]:
+        path.insert(0, [r,c])
+        [r,c] = parent_nodes[r,c]
+    print("Steps " + str(steps))
+
+    return path
 
 def get_maps():
     clt_static_map = rospy.ServiceProxy("/static_map"  , GetMap)
@@ -106,7 +189,7 @@ def callback_a_star(req):
     return generic_callback(req, 'a_star')
 
 def main():
-    print "PRACTICE 01 - " + NAME
+    print("PRACTICE 01 - " + NAME) 
     rospy.init_node("practice01")
     rospy.Service('/navigation/path_planning/dijkstra_search', GetPlan, callback_dijkstra)
     rospy.Service('/navigation/path_planning/a_star_search'  , GetPlan, callback_a_star)
