@@ -85,6 +85,51 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # Documentation to implement priority queues in python can be found in
     # https://docs.python.org/2/library/heapq.html
     #
+	g_values        = numpy.full(grid_map.shape,sys.maxint)
+	f_values        = numpy.full(grid_map.shape,sys.maxint)
+	parent_nodes    = numpy.full((grid_map.shape[0],grid_map.shape[1],2),-1)
+	in_open_list    = numpy.full(grid_map.shape,False)
+	in_closed_list  = numpy.full(grid_map.shape,False)
+	steps = 0
+
+	open_list =[]
+	heapq.heappush(open_list,(0,[start_r,start_c]))
+	g_values[start_r,start_c] = 0
+	f_values[start_r,start_c] = 0
+	in_open_list[start_r, start_c] = True
+	[r,c] = [start_r, start_c]  #current node
+
+	while len(open_list)> 0 and [r,c] != [goal_r, goal_c]:
+		[r,c] = heapq.heappop(open_list)[1]
+		in_closed_list[r,c] = True
+		neighbors = [[r+1,c],[r-1,c],[r,c+1],[r,c-1]]
+		for [nr,nc] in neighbors: 
+			if grid_map[nr,nc] != 0 or in_closed_list[nr,nc]:
+				continue
+			g = g_values[r,c] + 1 + cost_map[nr][nc] #calculate the value of g
+			h = numpy.abs(goal_r-nr) + numpy.abs(goal_c-nc)
+			f = g + h #calculate the value of f
+			#f_values[nr,nc] =   f #the value of f is recorded
+			if g < g_values[nr,nc]:
+				g_values[nr,nc] =   g
+				f_values[nr,nc] =   f #the value of f is recorded
+				parent_nodes[nr,nc] = [r,c]			   
+			if not in_open_list[nr,nc]:
+				in_open_list[nr,nc] = True
+				heapq.heappush(open_list,(f,[nr,nc]))
+			steps += 1  
+
+
+	if [r,c] != [goal_r,goal_c]:
+		print("Cannot calculate path by A-Star")
+		return[]
+	path = [] 
+	while [parent_nodes[r,c][0],parent_nodes[r,c][1]] != [-1,-1]:
+		path.insert(0,[r,c])
+		[r,c] = parent_nodes[r,c]
+	print("Path calculated by A-Star after " + str(steps) + " steps")
+	return path
+
     
 
 def get_maps():
