@@ -50,11 +50,11 @@ def get_inflated_map(static_map, inflation_cells):
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
     for i in range(height):
-    	for j in range(width):
-    		if static_map[i,j]>0:
-    			for k1 in range(i-inflation_cells, i+inflation_cells+1):
-    				for k2 in range(i-inflation_cells, i+inflation_cells+1):
-    					inflated[k1,k2]=static_map[i,j]
+    	for j in range(width):#recorremos el mapa y si encontramos
+    		if static_map[i, j] > 0:#una celda mayor a 0 inflamos el mapa
+    			for k1 in range(i-inflation_cells, i+inflation_cells+1):#rango de celdas a inflar
+    				for k2 in range(j-inflation_cells, j+inflation_cells+1):
+    					inflated[k1,k2]=static_map[i,j]#asignamos el valor de static map>0
     return inflated
 
 def get_cost_map(static_map, cost_radius):
@@ -70,17 +70,15 @@ def get_cost_map(static_map, cost_radius):
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
-    print "Nueva linea"
     for i in range(height):
-    	for j in range(width):
-    		if static_map[i,j] > 0:
-    			for k1 in range(-cost_radius, cost_radius+1):
-    				for k2 in range(-cost_radius, cost_radius+1):
-    					cost=cost_radius-max(abs(k1),abs(k2))
-    					cost_map[i+k1,j+k2]=10
-
-    					#if cost>cost_map[i+k1,j+k2]:
-    						#cost_map[i+k1,j+k2]=100 				
+		for j in range(width):#recorremos el mapa y si encontramos
+			if static_map[i,j]>0:#una celda mayor a 0 les asignamos un costo
+				for k1 in range(-cost_radius, cost_radius+1):#celdas cercanas al radio de costo
+					for k2 in range(-cost_radius, cost_radius+1):
+    						cost=cost_radius-max(abs(k1),abs(k2))#formula del costo
+    						if cost>cost_map[i+k1,j+k2]:#asignamos el mayor costo
+							cost_map[i+k1,j+k2]=cost
+				
     return cost_map
 
 def callback_inflated_map(req):
