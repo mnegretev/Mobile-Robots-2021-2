@@ -50,7 +50,7 @@ def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
         for [nr,nc] in neighbors:
             if grid_map[nr,nc] != 0 or in_closed_list[nr,nc]:
                 continue
-            g = g_values[r,c] + 1 + cost_map[r,c]
+            g = g_values[r,c] + 1 + cost_map[nr,nc]
             if g < g_values[nr,nc]:
                 g_values[nr,nc] = g
                 parent_nodes[nr,nc] = [r,c]
@@ -69,10 +69,6 @@ def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     print("Steps " + str(steps))
 
     return path
-
-def manhattan(start_r, start_c, goal_r, goal_c):
-    d = abs(start_r-goal_r) + abs(start_c-goal_c)
-    return d
 
 def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
@@ -108,7 +104,7 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
             if grid_map[nr,nc] != 0 or in_closed_list[nr,nc]:
                 continue
             h = abs(nr-goal_r) + abs(nc-goal_c)
-            g = g_values[r,c] + 1 + cost_map[r,c]
+            g = g_values[r,c] + 1 + cost_map[nr,nc]
             f = g+h
             if g < g_values[nr,nc]:
                 g_values[nr,nc] = g
