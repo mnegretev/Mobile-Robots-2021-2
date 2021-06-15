@@ -76,11 +76,11 @@ def get_cost_map(static_map, cost_radius):
                 for k1 in range(-cost_radius,cost_radius+1):#Voy a ir de menos el radio hasta más el radio
                     for k2 in range(-cost_radius,cost_radius+1):#Aqui para inflar las columnas
                         cost=cost_radius-max(abs(k1),abs(k2))#Se resta el radio de costo a la cordenada en valor absoluto mayor 
-                        if cost>cost_map[i+k1,i+k2]:#Si el costo es mayor a el valor que tenia la celda entonces si la pongo, si no es así, se queda igual
-                            cost_map[i+k1,i+k2]=cost#Con k1 y k2 delimito el cuadrado que voy a llenar y voy a tener que comparar para ver si sustituyo
+                        if cost>cost_map[i+k1,j+k2]:#Si el costo es mayor a el valor que tenia la celda entonces si la pongo, si no es así, se queda igual
+                            cost_map[i+k1,j+k2]=cost+1#Con k1 y k2 delimito el cuadrado que voy a llenar y voy a tener que comparar para ver si sustituyo
     
     
-    print(cost_map)                
+                 
     return cost_map
 
 
