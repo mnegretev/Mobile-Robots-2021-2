@@ -31,43 +31,42 @@ def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # Documentation to implement priority queues in python can be found in
     # https://docs.python.org/2/library/heapq.html
     #
-    g_values       = numpy.full(grid_mapa.shape,sys.maxint)
-    parent_nodes   = numpy.full((grid_map.shape[0],grid_map.shape[1],2),-1)
-    in_open_list   = numpy.full(grid_map.shape,False)
-    in_closed_list = numpy.full(grid_map.shape,False)
-
+    g_values = numpy.full(grid_map.shape, sys.maxint)
+    parent_nodes = numpy.full((grid_map.shape[0], grid_map.shape[1],2), -1)
+    in_open_list = numpy.full(grid_map.shape, False)
+    in_closed_list = numpy.full(grid_map.shape, False)
+    steps = 0
+    
     open_list = []
-    heapq.heappush(open_list, (0,[start_r,start_c]));
-    g_values[start_r,start_c]=0
-    in_open_list[start_r,start_c]=True
-    [r,c]=[start_r,start_c]
+    heapq.heappush(open_list, (0, [start_r, start_c]))
+    g_values[start_r, start_c] = 0
+    in_open_list[start_r, start_c] = True
+    [r,c] = [start_r, start_c]
     
-    while len(open_list)>0 and [r,c]!=[goal_r,goal_c]:
-       [r,C]= heapq.heapop(open_list)[1]
-    in_closed_list[r,c]=True
-    neighbors = [[r+1,c],[r-1,c],[r,c+1],[r,c-1]]
-    for [nr,nc] in neighbors :
-         if grid_map[nr,nc]!=0 or in_closed_list[nr,nc]:
-            continue
-         g=g_values[r,c]+1+cost_map[nr][nc]
-         if g < g_values[nr,nc]:
-             g_values[nr,nc] = g
-             parent nodes[nr,nc] = [r,c]
-         if not in_open_list[nr,nc]= True
-             in_open_list[nr,nc] =True
-             heapq.headppush(open_list,(g,[nr,nc]))
-    if[r,c] != [goal_r,goal_c]:
-      print("Nell carnal")
-      return[]
-    path[]
-    while[parent_nodes [r,c][0], parent_nodes[r,c][1]] != [-1,-1]:
-       path.insert(0,[r,c])
+    while len(open_list) > 0 and [r,c] != [goal_r, goal_c]:
+       [r,c] = heapq.heappop(open_list)[1]
+       in_closed_list[r,c] = True
+       neighbors = [[r+1,c], [r-1,c], [r,c+1], [r,c-1]]
+       for [nr,nc] in neighbors:
+           if grid_map[nr,nc] != 0 or in_closed_list[nr,nc]:
+               continue
+           g = g_values[r,c] + 1 + cost_map[nr][nc]
+           if g < g_values[nr,nc]:
+               g_values[nr,nc] = g
+               parent_nodes[nr,nc] = [r,c]
+           if not in_open_list[nr,nc]:
+               in_open_list[nr,nc] = True
+               heapq.heappush(open_list, (g, [nr,nc]))
+           steps+=1 
+    if [r,c] != [goal_r, goal_c]:
+       print("Cannot calculate path by Dijsktra : ")
+       return []
+    path = []
+    while [parent_nodes[r,c][0], parent_nodes[r,c][1]] != [-1,-1]:
+       path.insert(0, [r,c])
        [r,c] = parent_nodes[r,c]
-    return path
-        
-   
-    
-
+    print("path calculated by Dijkstrate after " + str(steps) + " steps")
+    return path     
 
     
 
@@ -83,6 +82,49 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # Documentation to implement priority queues in python can be found in
     # https://docs.python.org/2/library/heapq.html
     #
+    # return[]
+    
+    g_values = numpy.full(grid_map, sys.maxint)
+    f_values = numpy.full(grid_map, sys.maxint)
+    parent_nodes = numpy.full((grid_map.shape[0], grid_map.shape[1],2), -1)
+    in_open_list = numpyfull(grid_map.shape, False)
+    in_closed_list = numpy.full(grid_map.shape, False)
+    steps = 0
+
+    open_list = []
+    heapq.heappush(open_list, (0, [start_r, start_c]))
+    g_values[start_r, start_c] = 0
+    f_values[start_r, start_c] = 0
+    in_open_list[start_r, start_c] = True
+    [r,c] [start_r, start_c]
+    
+    while len(open_list) > 0 and [r,c] != [goal_r, goal_c]:
+        [r,c] = heapq.heppop(open_list)[1]
+        in_closed_list[r,c] = True
+        neighbors = [[r+1,c], [r-1,c], [r,c+1], [r,c-1]]
+        for [nr,nc] in neighbors:
+            if grid_map[nr,nc] != 0 or in_closed_list[nr,nc]:
+                continue
+            g = g_value[nr,nc] + 1 + cost_map[nr][nc]
+            h = numpy.abs(nr-goal_r)-numpy.abs(nc-goal_c)
+            f = g + h
+            if g < g_values[nr,nc]:
+                g_values[nr,nc] = g
+                parent_nodes[nr,nc] = [r,c]
+            if not in_open_list[nr,nc]:
+                in_open_list[nr,nc] = True
+                heapq.heappush(open_list, (f, [nr,nc]))
+            steps+=1
+    if [r,c] != [goal_r, goal_c]:
+        print("cannot calculate path by A*")
+        return[]
+    path = []
+    while [parent_nodes[r,c][0], parent_nodes[r,c][1]] != [-1,-1]:
+        path.insert(0, [r,c])
+        [r,c] = parent_nodes[r,c]
+    print("path calculated by A* after " + str(steps) + "steps")
+    return path
+
     
 
 def get_maps():
