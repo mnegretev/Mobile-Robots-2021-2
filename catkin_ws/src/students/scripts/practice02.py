@@ -35,7 +35,7 @@ from nav_msgs.srv import GetMap
 from nav_msgs.srv import GetMapResponse
 from nav_msgs.srv import GetMapRequest
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "Corona Molina Quimey Alejandro"
 static_map = None
 
 def get_inflated_map(static_map, inflation_cells):
@@ -49,7 +49,12 @@ def get_inflated_map(static_map, inflation_cells):
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
-    
+    for i in range(height):
+        for j in range (width):
+            if static_map[i,j] > 50: #revisamos si la celda esta ocupada
+                for k1 in range(i-inflation_cells, i+inflation_cells+1): #el +1 es porque incluyo el limite superior
+                    for k2 in range(j-inflation_cells, j+inflation_cells+1):
+                        inflated[k1,k2] = static_map[i,j] #marco ocupadas las celdas vecinas, ya infle. static map es el mapa sin inflar, pero que ya tiene obstaculos
     return inflated
 
 def get_cost_map(static_map, cost_radius):
@@ -65,6 +70,15 @@ def get_cost_map(static_map, cost_radius):
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
+    for i in range(height):
+       for j in range (width):
+           if static_map[i,j] > 50: #revisamos si la celda esta ocupada
+               for k1 in range(-cost_radius, cost_radius+1): #el +1 es porque incluyo el limite superior
+                    for k2 in range(-cost_radius, cost_radius+1):
+                        cost = cost_radius - max(abs(k1),abs(k2)) + 1  #radio absoluto menos el valor mas grande de la coordenada, mas 1, PARA CALCULAR COSTO  
+                        if cost > cost_map[i+k1,j+k2]:
+                            cost_map[i+k1,j+k2] = cost #anado el costo calculado si es mas grande que el que tenia
+    
     return cost_map
 
 def callback_inflated_map(req):
