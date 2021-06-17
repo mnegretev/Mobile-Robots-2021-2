@@ -35,7 +35,7 @@ from nav_msgs.srv import GetMap
 from nav_msgs.srv import GetMapResponse
 from nav_msgs.srv import GetMapRequest
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "GUZMAN_MARTINEZ"
 static_map = None
 
 def get_inflated_map(static_map, inflation_cells):
@@ -49,7 +49,12 @@ def get_inflated_map(static_map, inflation_cells):
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
-    
+    for i in range(height):
+        for j in range(width):
+            if static_map[i,j] > 0:
+                for k1 in range(i-inflation_cells, i+inflation_cells+1):
+                    for k2 in range(j-inflation_cells, j+inflation_cells+1):
+                        inflated[k1,k2]= static_map[i,j]
     return inflated
 
 def get_cost_map(static_map, cost_radius):
@@ -61,10 +66,23 @@ def get_cost_map(static_map, cost_radius):
     # Write the code necessary to calculate a cost map of the give map.
     # Cost must be calculated a number of 'cost_radius' cells around the occupied space.
     # Cost must increase when distance to obstacles decreases, and must be zero for all
-    # cells farther than 'cost_radius' cells from the obstacles. 
+    # cells farther than 'cost_radius' cells from the obstacles.
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
+    #print(static_map)
+    for i in range(height):
+        for j in range(width):
+            if static_map[i,j]>0:
+                for k1 in range(-cost_radius, cost_radius+1):
+                    for k2 in range(cost_radius, cost_radius+1):
+                        cost=cost_radius - max(abs(k1),abs(k2))
+                       # print("costoradio" +str(cost_radius))
+                       # print("maxabs" +str(max(abs(k1),abs(k2))))
+                       #print("costo" +str(cost))
+                       # print("costo map" +str(cost_map))
+                       # print("staticmap" +str(static_map))
+                        cost_map[i+k1,j+k2]= max(cost, cost_map[i+k1,j+k2])
     return cost_map
 
 def callback_inflated_map(req):
