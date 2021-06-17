@@ -78,17 +78,17 @@ def get_cost_map(static_map, cost_radius):
     #
    
 
-     for i in range(height):#Alto del mapa
-          for j in range(width):#Ancho del mapa
-               if static_map[i,j]>0:#Buscamos puntos ocupados, al encontrar alguno entramos a la funcion if
-                    for k1 in range(-cost_radius,cost_radius+1):#Mapeamos desde el costo menor hasta el mayor, el uno nos ayuda a incluir el elemento mas grande de las filas
-                         for k2 in range(-cost_radius,cost_radius+1):##Mapeamos desde el costo menor hasta el mayor, el uno nos ayuda a incluir el elemento mas grande de las columnas
-                              cost=cost_radius-max(abs(k1),abs(k2))#Restamos el costo del al vector de coordenadas con el que se esta trabajando al vector de las dos coordenada de mayor valor absoluto
-                              if cost>cost_map[i+k1,j+k2]:#Comparamos si el valor de cost es mayor al costo que ya tenia asignado la celda anteriormente
-                              cost_map[i+k1,j+k2]=cost: #Asignamos el nuevo valor del costo a la celda
-    
+    for i in range(height):#Alto del mapa
+       for j in range(width):#Ancho del mapa
+          if static_map[i,j]>0:#Buscamos puntos ocupados, al encontrar alguno entramos a la funcion if
+             for k1 in range(-cost_radius,cost_radius+1):#Mapeamos desde el costo menor hasta el mayor, el uno nos ayuda a incluir el elemento mas grande de las filas
+                 for k2 in range(-cost_radius,cost_radius+1):##Mapeamos desde el costo menor hasta el mayor, el uno nos ayuda a incluir el elemento mas grande de las columnas
+                    cost=cost_radius-max(abs(k1),abs(k2))#Restamos el costo del al vector de coordenadas con el que se esta trabajando al vector de las dos coordenada de mayor valor absoluto
+                    if cost > cost_map[i+k1, j+k2]: #Comparamos si el valor de cost es mayor al costo que ya tenia asignado la celda anteriormente
+                       cost_map[i+k1, j+k2]=cost #Asignamos el nuevo valor del costo a la celda
+    						 #Tenia errores de sintaxis
 
- return cost_map
+    return cost_map
 
 
 
