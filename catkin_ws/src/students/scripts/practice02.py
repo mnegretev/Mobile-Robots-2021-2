@@ -35,13 +35,14 @@ from nav_msgs.srv import GetMap
 from nav_msgs.srv import GetMapResponse
 from nav_msgs.srv import GetMapRequest
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "ALVAREZ_PEREZ"
 static_map = None
 
 def get_inflated_map(static_map, inflation_cells):
     print("Inflating map by " + str(inflation_cells) + " cells")
     inflated = numpy.copy(static_map)
     [height, width] = static_map.shape
+
     #
     # TODO:
     # Write the code necessary to inflate the obstacles in the map a radius
@@ -49,13 +50,23 @@ def get_inflated_map(static_map, inflation_cells):
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
-    
+
+    for i in range(height):#Alto del mapa
+       for j in range(width):#Ancho del mapa
+          if static_map[i,j]>0:#Buscamos puntos ocupados, al encontrar alguno entramos a la funcion if
+             for k1 in range(i-inflation_cells,i+inflation_cells+1):#Infamos la filas
+                for k2 in range(j-inflation_cells,j+inflation_cells+1):#Inflamos las columnas
+                     inflated[k1,k2]=static_map[i,j]#k1 y k2 son los valores que se asignan desde la interfaz grafica para configurar el ancho y alto de la inflacion. Asignamos el nuevo mapa inflado al 							     mapa antiguo
+
     return inflated
 
 def get_cost_map(static_map, cost_radius):
     print "Calculating cost map with " +str(cost_radius) + " cells"
     cost_map = numpy.copy(static_map)
     [height, width] = static_map.shape
+
+
+
     #
     # TODO:
     # Write the code necessary to calculate a cost map of the give map.
@@ -66,6 +77,20 @@ def get_cost_map(static_map, cost_radius):
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
     return cost_map
+
+     for i in range(height):#Alto del mapa
+          for j in range(width):#Ancho del mapa
+               if static_map[i,j]>0:#Buscamos puntos ocupados, al encontrar alguno entramos a la funcion if
+                    for k1 in range(-cost_radius,cost_radius+1):#Mapeamos desde el costo menor hasta el mayor, el uno nos ayuda a incluir el elemento mas grande de las filas
+                         for k2 in range(-cost_radius,cost_radius+1):##Mapeamos desde el costo menor hasta el mayor, el uno nos ayuda a incluir el elemento mas grande de las columnas
+                              cost=cost_radius-max(abs(k1),abs(k2))#Restamos el costo del al vector de coordenadas con el que se esta trabajando al vector de las dos coordenada de mayor valor absoluto
+                              if cost>cost_map[i+k1,j+k2]:#Comparamos si el valor de cost es mayor al costo que ya tenia asignado la celda anteriormente
+                              cost_map[i+k1,j+k2]=cost: #Asignamos el nuevo valor del costo a la celda
+    
+
+
+
+
 
 def callback_inflated_map(req):
     global static_map, inflation_radius

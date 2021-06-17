@@ -102,16 +102,16 @@ def get_maps():
     except:
         inflated_map = static_map
         print("Cannot get inflated map. Using static map instead")
-    inflated_map = numpy.asarray(inflated_map.data)
-    inflated_map = numpy.reshape(inflated_map, (static_map.info.height, static_map.info.width))
+    inflated_map = np.asarray(inflated_map.data)
+    inflated_map = np.reshape(inflated_map, (static_map.info.height, static_map.info.width))
     try:
         cost_map = clt_cost_map()
         cost_map = cost_map.map
     except:
         cost_map = static_map
         print("Cannot get cost map. Using static map instead")
-    cost_map = numpy.asarray(cost_map.data)
-    cost_map = numpy.reshape(cost_map, (static_map.info.height, static_map.info.width))
+    cost_map = np.asarray(cost_map.data)
+    cost_map = np.reshape(cost_map, (static_map.info.height, static_map.info.width))
     return [static_map, inflated_map, cost_map]
 
 def generic_callback(req, algorithm):
