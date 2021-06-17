@@ -35,7 +35,7 @@ from nav_msgs.srv import GetMap
 from nav_msgs.srv import GetMapResponse
 from nav_msgs.srv import GetMapRequest
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "HERNANDEZ_LUVIANO"
 static_map = None
 
 def get_inflated_map(static_map, inflation_cells):
@@ -49,11 +49,16 @@ def get_inflated_map(static_map, inflation_cells):
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
-    
+    for i in range(height):
+        for j in range(width):
+            if static_map[i,j] > 0:
+                for k1 in range(i-inflation_cells, i+inflation_cells+1):
+                    for k2 in range(j-inflation_cells, j+inflation_cells+1):
+                        inflated[k1,k2] = static_map[i,j]
     return inflated
 
 def get_cost_map(static_map, cost_radius):
-    print "Calculating cost map with " +str(cost_radius) + " cells"
+    print ("Calculating cost map with " +str(cost_radius) + " cells")
     cost_map = numpy.copy(static_map)
     [height, width] = static_map.shape
     #
@@ -65,6 +70,14 @@ def get_cost_map(static_map, cost_radius):
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
+    for i in range(height):
+        for j in range(width):
+            if static_map[i,j] > 0:
+                for k1 in range(-cost_radius, cost_radius+1):
+                    for k2 in range(-cost_radius, cost_radius+1):
+                        cost = cost_radius - max(abs(k1), abs(k2))
+                        if cost_map[i+k1, j+k2] < cost:
+                            cost_map[i+k1, j+k2] = cost
     return cost_map
 
 def callback_inflated_map(req):
@@ -93,7 +106,7 @@ def callback_cost_map(req):
     
 def main():
     global static_map, inflation_radius, cost_radius
-    print "PRACTICE 02 - " + NAME
+    print ("PRACTICE 02 - " + NAME)
     rospy.init_node("practice02")
     rospy.Service('/inflated_map', GetMap, callback_inflated_map)
     rospy.Service('/cost_map', GetMap, callback_cost_map)
