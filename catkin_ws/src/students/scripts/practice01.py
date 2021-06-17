@@ -126,6 +126,7 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
 	    path.insert(0, [r,c])
 	    [r,c] = parent_nodes[r,c]
     print("Path calculated by A* " + str(steps) + " steps")
+    return path
 
 def get_maps():
     clt_static_map = rospy.ServiceProxy("/static_map"  , GetMap)
