@@ -39,39 +39,39 @@ NAME = "MONTERRUBIO_LOPEZ"
 static_map = None
 
 def get_inflated_map(static_map, inflation_cells):
-    print("Inflating map by " + str(inflation_cells) + " cells")
-    inflated = numpy.copy(static_map)
-    [height, width] = static_map.shape
-    #
-    # TODO:
-    # Write the code necessary to inflate the obstacles in the map a radius
-    # given by 'inflation_cells'
-    # Map is given in 'static_map' as a bidimensional numpy array.
-    # Consider as occupied cells all cells with an occupation value greater than 50
-    #
+	print("Inflating map by " + str(inflation_cells) + " cells")
+	inflated = numpy.copy(static_map)
+	[height, width] = static_map.shape
+	#
+	# TODO:
+	# Write the code necessary to inflate the obstacles in the map a radius
+	# given by 'inflation_cells'
+	# Map is given in 'static_map' as a bidimensional numpy array.
+	# Consider as occupied cells all cells with an occupation value greater than 50
+	#
 	for i in range(0,width-1):
 		for j in range(0,height-1):
 			if static_map[j,i] > 50: #If the cell is occupied
 				for u in range(i - inflation_cells, i + inflation_cells):
 					for v in range(j - inflation_cells, j+ inflation_cells):
 						inflated[v,u] = 100 #Cell is changed as occupied
-    
-    return inflated
+
+	return inflated
 
 def get_cost_map(static_map, cost_radius):
-    print "Calculating cost map with " +str(cost_radius) + " cells"
-    cost_map = numpy.copy(static_map)
-    [height, width] = static_map.shape
-    #
-    # TODO:
-    # Write the code necessary to calculate a cost map of the give map.
-    # Cost must be calculated a number of 'cost_radius' cells around the occupied space.
-    # Cost must increase when distance to obstacles decreases, and must be zero for all
-    # cells farther than 'cost_radius' cells from the obstacles. 
-    # Map is given in 'static_map' as a bidimensional numpy array.
-    # Consider as occupied cells all cells with an occupation value greater than 50
-    #
-	
+	print "Calculating cost map with " +str(cost_radius) + " cells"
+	cost_map = numpy.copy(static_map)
+	[height, width] = static_map.shape
+	#
+	# TODO:
+	# Write the code necessary to calculate a cost map of the give map.
+	# Cost must be calculated a number of 'cost_radius' cells around the occupied space.
+	# Cost must increase when distance to obstacles decreases, and must be zero for all
+	# cells farther than 'cost_radius' cells from the obstacles. 
+	# Map is given in 'static_map' as a bidimensional numpy array.
+	# Consider as occupied cells all cells with an occupation value greater than 50
+	#
+
 	for i in range(0,width-1):
 		for j in range(0,height-1):
 			if static_map[j,i] > 50: #If the cell is occupied
@@ -79,8 +79,8 @@ def get_cost_map(static_map, cost_radius):
 					for v in range(-cost_radius, +cost_radius):
 						c = cost_radius + 1 - max(abs(v),abs(u))
 						cost_map[j+v, i+u] = max(c,cost_map[j+v, i+u])	
-	
-    return cost_map
+
+	return cost_map
 
 def callback_inflated_map(req):
     global static_map, inflation_radius
