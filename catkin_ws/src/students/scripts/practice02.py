@@ -35,7 +35,7 @@ from nav_msgs.srv import GetMap
 from nav_msgs.srv import GetMapResponse
 from nav_msgs.srv import GetMapRequest
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "MONTERRUBIO_LOPEZ"
 static_map = None
 
 def get_inflated_map(static_map, inflation_cells):
@@ -49,6 +49,12 @@ def get_inflated_map(static_map, inflation_cells):
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
+	for i in range(0,width-1):
+		for j in range(0,height-1):
+			if static_map[j,i] > 50: #If the cell is occupied
+				for u in range(i - inflation_cells, i + inflation_cells):
+					for v in range(j - inflation_cells, j+ inflation_cells):
+						inflated[v,u] = 100 #Cell is changed as occupied
     
     return inflated
 
@@ -65,6 +71,15 @@ def get_cost_map(static_map, cost_radius):
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
+	
+	for i in range(0,width-1):
+		for j in range(0,height-1):
+			if static_map[j,i] > 50: #If the cell is occupied
+				for u in range(-cost_radius, +cost_radius):
+					for v in range(-cost_radius, +cost_radius):
+						c = cost_radius + 1 - max(abs(v),abs(u))
+						cost_map[j+v, i+u] = max(c,cost_map[j+v, i+u])	
+	
     return cost_map
 
 def callback_inflated_map(req):
