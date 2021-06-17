@@ -76,7 +76,7 @@ def get_cost_map(static_map, cost_radius):
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
-    return cost_map
+   
 
      for i in range(height):#Alto del mapa
           for j in range(width):#Ancho del mapa
@@ -88,7 +88,7 @@ def get_cost_map(static_map, cost_radius):
                               cost_map[i+k1,j+k2]=cost: #Asignamos el nuevo valor del costo a la celda
     
 
-
+ return cost_map
 
 
 
