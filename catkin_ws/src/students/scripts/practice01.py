@@ -107,7 +107,7 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
                 continue
             g=g_values[r,c]+1+cost_map[r,c]#Genero la g del punto anterios más 1, en este caso no es g=0 porque lo llene con un valor muy grande, pero no importa, ya que tiene el mismo efecto que empezar con g=0 y le agrego ademas una función de costos que es la distancia que hay de puntos a obstaculos ya que no quiero que el robot se acerque a obstaculos
             f=g+(np.abs(goal_r-nr)+np.abs(goal_c-nc))#Calculo la f con la g y la distancia de manhatan
-            if f<f_values[nr,nc]:#Si el costo del nodo vecino de r,c es menor al costo del nodo vecino nr, nc entonces cambio la g del nodo vecino, ya que con ello digo que al nodo vecino llegue por otra ruta mejor
+            if g<g_values[nr,nc]:#Si el costo del nodo vecino de r,c es menor al costo del nodo vecino nr, nc entonces cambio la g del nodo vecino, ya que con ello digo que al nodo vecino llegue por otra ruta mejor
                 g_values[nr,nc]=g #Aqui lo que hago es que yo llegue por una ruta al punto nr, nc y si la g fue menor que la g que ya se tenia, tal vez por otra ruta, eso quiere decir que la ruta nueva es mejor y debo cambiar esa g
                 f_values[nr,nc]=f #Aqui lo que hago es que yo llegue por una ruta al punto nr, nc y si la g fue menor que la g que ya se tenia, tal vez por otra ruta, eso quiere decir que la ruta nueva es mejor y debo cambiar esa g
                 p_nodes[nr,nc]=[r,c]#Aquí estoy agregando el predecesor del vecino si se encuentra que el costo es menor que el costo ya calculado por otra ruta tal vez
