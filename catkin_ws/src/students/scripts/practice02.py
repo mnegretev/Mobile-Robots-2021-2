@@ -70,18 +70,12 @@ def get_cost_map(static_map, cost_radius):
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
-    #print(static_map)
     for i in range(height):
         for j in range(width):
             if static_map[i,j]>0:
                 for k1 in range(-cost_radius, cost_radius+1):
                     for k2 in range(cost_radius, cost_radius+1):
                         cost=cost_radius - max(abs(k1),abs(k2))
-                       # print("costoradio" +str(cost_radius))
-                       # print("maxabs" +str(max(abs(k1),abs(k2))))
-                       #print("costo" +str(cost))
-                       # print("costo map" +str(cost_map))
-                       # print("staticmap" +str(static_map))
                         cost_map[i+k1,j+k2]= max(cost, cost_map[i+k1,j+k2])
     return cost_map
 
