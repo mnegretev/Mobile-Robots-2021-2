@@ -77,7 +77,7 @@ def get_cost_map(static_map, cost_radius):
                  for k1 in range(-cost_radius,cost_radius+1):  # inflara desde  menos algo hasta mas algo 
                      for k2 in range(-cost_radius, cost_radius+1): #inflara desde menos algo hasta mas algo 
                          cost = cost_radius- max(abs(k1),abs(k2))  # el costo = radio de costo que definimos - el valor absoluto de la  posicion de k1 y k2
-                         cost_map[i+k1, j+k2]= cost
+                         cost_map[i+k1, j+k2]= max(cost, cost_map[i+k1, j+k2]) 
   
     return cost_map
 
