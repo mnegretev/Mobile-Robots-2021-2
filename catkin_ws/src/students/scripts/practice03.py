@@ -84,7 +84,7 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # https://docs.python.org/2/library/heapq.html
     #
     g_values = numpy.full(grid_map.shape, sys.maxint)
-    f_values = numpy.full(grid_map.shape, sys.maxint) #a*
+    f_values = numpy.full(grid_map.shape, sys.maxint) 
     parent_nodes = numpy.full((grid_map.shape[0], grid_map.shape[1], 2), -1)
     in_open_list = numpy.full(grid_map.shape, False)
     in_closed_list = numpy.full(grid_map.shape, False)
@@ -105,15 +105,15 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
             if grid_map[nr,nc] != 0 or in_closed_list[nr,nc]:
                 continue
             g = g_values[r,c] + 1 + cost_map[nr][nc]
-            h = abs(goal_r - nr) + abs(goal_c - nc) #Manhattan
-            f = g + h #a*
-            if g < g_values[nr,nc]: #a*
+            h = abs(nr - goal_r ) + abs(nr - goal_c) 
+            f = g + h 
+            if g < g_values[nr,nc]: 
                 g_values[nr,nc] = g
-                f_values[nr,nc] = f #a*
+                f_values[nr,nc] = f 
                 parent_nodes[nr,nc] = [r,c]
             if not in_open_list[nr,nc]:
                 in_open_list[nr,nc] = True
-                heapq.heappush(open_list, (f, [nr,nc])) #a*
+                heapq.heappush(open_list, (f, [nr,nc])) 
             steps += 1
 
     if [r,c] != [goal_r, goal_c]:
@@ -123,7 +123,6 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     while [parent_nodes[r,c][0], parent_nodes[r,c][1]] != [-1,-1]:
         path.insert(0, [r,c])
         [r,c] = parent_nodes[r,c]
-
     print("Path calculated by A* after " + str(steps) + " steps.")
     return path
 
