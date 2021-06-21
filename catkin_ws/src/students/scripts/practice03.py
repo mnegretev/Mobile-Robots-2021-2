@@ -14,12 +14,13 @@ import numpy
 import heapq
 import rospy
 import copy
+import math 
 from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Path
 from nav_msgs.srv import *
 from collections import deque
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "GUZMAN_SANTIAGO"
 
 def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
@@ -143,8 +144,40 @@ def get_smooth_path(original_path, alpha, beta):
     gradient_mag = tolerance + 1                           # we have reached the local minimum.
     gradient     = [[0,0] for i in range(len(smooth_path))]# Gradient has N components of the form [x,y]. 
     epsilon      = 0.5                                     # This variable will weight the calculated gradient.
-
-    
+   
+   
+    print("Smoothing path with " + str(len(smooth_path)) + " points, using: " + str([alpha, beta]))
+    while gradient_mag > tolerance:  #mientras la magnitu del gradiente sea mayor a la tolerancia 
+        gradient_mag = 0
+        [xi,yi] = smooth_path[0]  #El nodo actual
+        [xn.yn] = smooth_path[1]  #El nodo siguiente
+        [xo,yo] = original_path[0]
+        gx = alpha*(xi - xn) + beta*(xi-xo) #gradiente de la posicion 0 o la primera posicion en x 
+        gy = alpha*(yi - yn) + beta*(yi-yo) #gradiente de la posicion 0 o la primera posicion en y  
+        [xi,yi] = [xi - epsilon*gx, yi - epsilon*gy] # Muevo en sentido contrario al gradiente 
+        smooth_path[0] = [xi,yi]  # Lo guardo en la ruta en la posicion 0
+        gradient_mag += gx**2 + gy**2  # Se cambia la magnitud del gradiente 
+        for i  in range(1,len(smooth_path)-1 ):  #Para cada i  en el conjunto de indices, inicia desde el indice 1 o posicion 1 o segunda posicion hasta el penultim
+            [xi,yi] = smooth_path[i]   #para el i-esimo termino
+            [xp,yp] = smooth_path[i-1] #para el punto anterior de la ruta 
+            [xn.yn] = smooth_path[i+1] #para el punto siguiente en la ruta
+            [xo,yo] = original_path[i]    #Esta es la ruta original con el i-esimo punto 
+            gx = alpha*(2*xi - xp - xn) + beta*(xi-xo)  #Calculo del gradiente para el punto x
+            gy = alpha*(2*yi - yp - yn) + beta*(yi-yo)  #Calculo del gradiente para el punto y 
+            [xi,yi] = [xi - epsilon*gx, yi - epsilon*gy] # El i-esimo termino se multiplicara por el gradiente lo que nos dara el descenso del gradiente(muevo en sentido contrario el gradiente)
+            smooth_path[i] = [xi,yi]    # Lo guardamos en la ruta 
+            gradient_mag += gx**2 + gy**2
+        #Esto es para el ultimo punto, por lo cual quiero el  actual que es 99-1 o sea el -1 y el  previo
+        [xi,yi] = smooth_path[-1]  #El nodo actual
+        [xp.yp] = smooth_path[-2]  #El nodo previo
+        [xo,yo] = original_path[-1]
+        gx = alpha*(xn - xp) + beta*(xi-xo) #gradiente de la posicion 0 o la primera posicion en x 
+        gy = alpha*(yn - yp) + beta*(yi-yo) #gradiente de la posicion 0 o la primera posicion en y  
+        [xi,yi] = [xi - epsilon*gx, yi - epsilon*gy]
+        smooth_path[-1] = [xi,yi] 
+        gradient_mag += gx**2 + gy**2
+        gradient_mag  = math.sqrt(gradient_mag)
+        print("Path smoothed succesfully")    
     return smooth_path
 
 
