@@ -18,8 +18,9 @@ from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Path
 from nav_msgs.srv import *
 from collections import deque
+import math 
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "Corona Molina Quimey Alejandro"
 
 def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
@@ -32,6 +33,50 @@ def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # Documentation to implement priority queues in python can be found in
     # https://docs.python.org/2/library/heapq.html
     #
+        
+   ########
+
+    g_values = numpy.full (grid_map.shape,sys.maxint)
+    parent_nodes = numpy.full ((grid_map.shape[0],grid_map.shape[1],2),-1)
+    in_open_list = numpy.full(grid_map.shape,False) 
+    in_closed_list = numpy.full(grid_map.shape,False)
+    steps = 0
+    
+    open_list = []
+    heapq.heappush(open_list, (0,[start_r,start_c]))
+    g_values[start_r,start_c]=0 #agrego el nodo inicial como primer pnto de g
+    in_open_list[start_r,start_c]=True #levanto la bandera para el primer nodo
+    [r,c]=[start_r,start_c]#nodo actual
+    #el chiste es ordenar los valores de g donde el mas pequeno este al final############################################################################
+    #cuando se sale de esta lista o ya se vacio la lista o ya llego a la meta
+    
+    while len(open_list)>0 and [r,c]!=[goal_r,goal_c]:#mientras la lista abierta no este vacia y no haya llegado a la meta
+        [r,c] = heapq.heappop(open_list)[1]#paso el nodo actual a la lista abiert
+        in_closed_list[r,c]=True #y marco que ya pase
+        neighbors=[[r+1,c],[r-1,c],[r,c+1],[r,c-1]]#defino a los vecinos cercanos up down left right
+        for [nr,nc] in neighbors:#cuando nos brincamos un nodo
+            if grid_map[nr,nc] != 0 or in_closed_list[nr,nc]:#cuando esta ocupado y ese nodo ya esta en la lista cerrada( ya fue el nodo actual)
+                continue#me lo salto
+            g = g_values[r,c] +1 + cost_map[nr][nc]#calculo(actualizo) el del nodo actual mas 1, mas el costo. Calcula rutas cortas pero que se alejen de obstaculos
+            if g < g_values[nr,nc]:# si el valor g del vecino es menor que el que tenia
+                g_values[nr,nc] = g #se lo cambio
+                parent_nodes[nr,nc]=[r,c] # y asigno como nodo anterior de este nuevo vecino al nodo actual
+            if not in_open_list[nr,nc]:
+                in_open_list[nr,nc] = True  #marco el nodo que estoy expandiendo en la lista aboerta
+                heapq.heappush(open_list,(g,[nr,nc]))#y lo agrego cpn su par que es el valor y el vecino cerano 
+            steps+=1
+        
+        
+    if [r,c]!=[goal_r,goal_c]: #Si no pudo encontrar la ruta (la lista abierta ya se vacio)
+        print("Cannot calculate path by Dijsktra:'(")
+        return [] 
+    
+    path=[]
+    while [parent_nodes[r,c][0],parent_nodes[r,c][1]] !=[-1,-1]: #mientras haya sido visitado el nodo padre del nodo actual
+        path.insert(0,[r,c]) #todavia tiene padre, vamos patras    
+        [r,c] = parent_nodes[r,c]# y le asigno su propio padre
+    print("Path calculated by Dijsktra afert"+str(steps)+" steps")
+    return path
 
 def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
@@ -45,6 +90,51 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # Documentation to implement priority queues in python can be found in
     # https://docs.python.org/2/library/heapq.html
     #
+    g_values =numpy.full (grid_map.shape,sys.maxint)#que me llene un arreglo del tamano de mi cuadricula con numeros grandes
+    f_values =numpy.full (grid_map.shape,sys.maxint)
+    parent_nodes = numpy.full ((grid_map.shape[0],grid_map.shape[1],2),-1)
+    in_open_list = numpy.full(grid_map.shape,False)#arreglo con celdas vacias
+    in_closed_list = numpy.full(grid_map.shape,False)
+    steps = 0
+    
+    open_list = []
+    heapq.heappush(open_list, (0,[start_r,start_c]))#estructura de cola con prioridad. Agrego a la lista abierta el nodo inicial (elemento de ponderacion,elemento a agregar)
+    g_values[start_r,start_c]=0 #agrego el nodo inicial como primer punto de g
+    f_values[start_r,start_c]=0 
+    in_open_list[start_r,start_c]=True #levanto la bandera para el primer nodo
+    [r,c]=[start_r,start_c]#nodo actual
+    #el chiste es ordenar los valores de g donde el mas pequeno este al final############################################################################
+    #cuando se sale de esta lista o ya se vacio la lista o ya llego a la meta
+    while len(open_list)>0 and [r,c]!=[goal_r,goal_c]:#mientras la lista abierta no este vacia y no haya llegado a la meta
+        [r,c] = heapq.heappop(open_list)[1]#quito el nodo actual de la lista abiert
+        in_closed_list[r,c]=True #y marco que ya pase
+        neighbors=[[r+1,c],[r-1,c],[r,c+1],[r,c-1]]#defino a los vecinos cercanos up down left right
+        for [nr,nc] in neighbors:#revisamos condiciones para cada uno de los vecinos
+            if grid_map[nr,nc] != 0 or in_closed_list[nr,nc]:#si esta ocupado o ese nodo ya esta en la lista cerrada( ya fue el nodo actual)
+                continue#me lo salto
+            g = g_values[r,c] +1 + cost_map[nr][nc]#calculo(actualizo) el del nodo actual mas 1, mas el costo. Calcula rutas cortas pero que se alejen de obstaculos
+            f = abs(nr-goal_r)+abs(nc-goal_c) + g
+            if g < g_values[nr,nc]:# si el valor g del vecino es menor que el del nodo actual
+                g_values[nr,nc] = g #le cambio el valor g al nodo actual
+                f_values[nr,nc] = f
+                parent_nodes[nr,nc]=[r,c] # y asigno como nodo anterior de este nuevo vecino al nodo actual
+	        if not in_open_list[nr,nc]:
+	            in_open_list[nr,nc] = True  #marco el nodo que estoy expandiendo en la lista aboerta
+	            heapq.heappush(open_list,(f,[nr,nc]))#y lo agrego cpn su par que es el valor y el vecino cerano 
+            steps+=1
+        
+        
+    if [r,c]!=[goal_r,goal_c]: #Si no pudo encontrar la ruta (la lista ya se vacio)
+        print("Cannot calculate path by Dijsktra:'(")
+        return [] 
+    path=[]
+    while [parent_nodes[r,c][0],parent_nodes[r,c][1]] !=[-1,-1]: #mientras haya sido visitado el nodo padre del nodo actual
+        path.insert(0,[r,c]) #todavia tiene padre, vamos patras    
+        [r,c] = parent_nodes[r,c]# y le asigno su propio padre
+    print("Path calculated by A* after "+str(steps)+" steps")
+    return path
+
+
 
 def get_smooth_path(original_path, alpha, beta):
     #
@@ -64,7 +154,43 @@ def get_smooth_path(original_path, alpha, beta):
     gradient     = [[0,0] for i in range(len(smooth_path))]# Gradient has N components of the form [x,y]. 
     epsilon      = 0.5                                     # This variable will weight the calculated gradient.
 
-    
+#Si aumenta la alfa, se vuelve mas suave la ruta, ya que los puntos se pegan mas a una ruta curveada    
+    print("Smoothing path with: " + str(len(smooth_path)) + " points, using: " + str([alpha,beta])) 
+    while gradient_mag > tolerance:
+        gradient_mag=0
+        #primer elemento de la serie
+        [xi,yi]= smooth_path[0] #punto actual
+        [xn,yn]= smooth_path[1]#punto siguiente
+        [xo,yo]= original_path[0]
+        gx= alpha*(xi - xn) + beta*(xi - xo)
+        gy= alpha*(yi - yn) + beta*(yi - yo)
+        [xi,yi] = [xi - epsilon*gx, yi - epsilon*gy]
+        smooth_path[0] = [xi,yi]
+        gradient_mag += gx**2 + gy**2
+        #segundo a penultimo elementos
+        for i in range(1,len(smooth_path)-1): #el primer y el ultimo indice se calculan diferente
+            [xi,yi]= smooth_path[i] #punto actual
+            [xp,yp]= smooth_path[i-1]#punto previo
+            [xn,yn]= smooth_path[i+1]#punto siguiente
+            [xo,yo]= original_path[i]#punto de la ruta sin suavizar (original)
+            gx = alpha*(2*xi-xp-xn) + beta*(xi-xo)
+            gy = alpha*(2*yi-yp-yn) + beta*(yi-yo)
+            [xi,yi] = [xi - epsilon*gx, yi - epsilon*gy] #descenso del gradiente
+            smooth_path[i] = [xi,yi] #guardamos la ruta
+            gradient_mag += gx**2 + gy**2
+
+        #ultimo elemento de la serie
+        [xi,yi]= smooth_path[-1] #ultimo punto
+        [xp,yp]= smooth_path[-2]#penultimo punto
+        [xo,yo]= original_path[-1]
+        gx= alpha*(xn - xp) + beta*(xi - xo)
+        gy= alpha*(yn - yp) + beta*(yi - yo)
+        [xi,yi] = [xi - epsilon*gx, yi - epsilon*gy]
+        smooth_path[-1] = [xi,yi] 
+        gradient_mag += gx**2 + gy**2
+        gradient_mag = math.sqrt(gradient_mag)
+
+    print("Path smoothed succesfully (Y)")    
     return smooth_path
 
 
@@ -142,7 +268,7 @@ def callback_a_star(req):
     return generic_callback(req, 'a_star')
 
 def main():
-    print "PRACTICE 03 - " + NAME
+    print ("PRACTICE 03 - " + NAME)
     rospy.init_node("practice03")
     rospy.Service('/navigation/path_planning/dijkstra_search', GetPlan, callback_dijkstra)
     rospy.Service('/navigation/path_planning/a_star_search'  , GetPlan, callback_a_star)
@@ -156,4 +282,3 @@ if __name__ == '__main__':
         main()
     except rospy.ROSInterruptException:
         pass
-    
