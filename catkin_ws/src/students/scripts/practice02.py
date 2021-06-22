@@ -73,7 +73,7 @@ def get_cost_map(static_map, cost_radius):
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
-     r= cost_radius
+    r= cost_radius
     for i in range(0, height):
         for j in range(0, width):
             if static_map[i, j]>50:

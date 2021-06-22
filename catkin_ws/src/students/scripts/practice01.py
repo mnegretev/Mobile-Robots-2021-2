@@ -132,8 +132,8 @@ def get_maps():
     clt_static_map = rospy.ServiceProxy("/static_map"  , GetMap)
     clt_cost_map   = rospy.ServiceProxy("/cost_map"    , GetMap)
     clt_inflated   = rospy.ServiceProxy("/inflated_map", GetMap)
-    static_map   = clt_static_map()
-    static_map   = static_map.map
+    static_map     = clt_static_map()
+    static_map     = static_map.map
     try:
         inflated_map = clt_inflated()
         inflated_map = inflated_map.map

@@ -14,12 +14,13 @@ import numpy
 import heapq
 import rospy
 import copy
+import math
 from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Path
 from nav_msgs.srv import *
 from collections import deque
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "PEREZ_VASQUEZ_CARLOS"
 
 def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
@@ -32,6 +33,47 @@ def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # Documentation to implement priority queues in python can be found in
     # https://docs.python.org/2/library/heapq.html
     #
+    g_values       = numpy.full(grid_map.shape,sys.maxint)
+    parent_nodes   = numpy.full((grid_map.shape[0], grid_map.shape[1], 2), -1)
+    in_open_list   = numpy.full(grid_map.shape, False)
+    in_closed_list = numpy.full(grid_map.shape, False)
+    steps = 0
+
+
+    open_list =[]
+    heapq.heappush(open_list,(0,[start_r, start_c]))
+    g_values[start_r,start_c]=0
+    in_open_list[start_r,start_c]= True
+    [r,c]=[start_r,start_c]
+
+    while len(open_list)>0 and [r,c] !=[goal_r, goal_c]:
+        [r,c]= heapq.heappop(open_list)[1]
+        in_closed_list[r,c]=True
+        neighbors = [[r+1,c],[r-1,c],[r,c+1],[r,c-1]]
+        for [nr,nc] in neighbors:
+            if grid_map[nr,nc]!= 0 or in_closed_list[nr,nc]:
+                continue
+            g = g_values[r,c] + 1 + cost_map[nr][nc]
+            if g < g_values[nr, nc]:
+                g_values[nr,nc]= g
+                parent_nodes[nr,nc]= [r,c]
+            if not in_open_list[nr,nc]:
+                in_open_list[nr, nc] = True
+                heapq.heappush(open_list,(g, [nr,nc]))
+
+            steps +=1
+    
+    if [r,c]!= [goal_r,goal_c]:
+        print("cannot calculate path by DJsktra")
+        return[]
+    path=[]
+    while[parent_nodes[r,c][0], parent_nodes[r,c][1]] != [-1,-1]:
+        path.insert(0, [r,c])
+        [r,c]= parent_nodes[r,c]
+    print("Path calculated by Djsktra after "+ str(steps)+ " steps")
+    return path
+    
+
 
 def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
@@ -45,6 +87,72 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # Documentation to implement priority queues in python can be found in
     # https://docs.python.org/2/library/heapq.html
     #
+    execution_steps=0
+    open_list = []
+    heapq.heapify(open_list)
+    in_open_list   = numpy.full(grid_map.shape, False)
+    in_closed_list = numpy.full(grid_map.shape, False)
+    distances      = numpy.full(grid_map.shape, sys.maxint)
+    parent_nodes   = numpy.full((grid_map.shape[0], grid_map.shape[1], 2), -1)
+
+    [r,c] = [start_r, start_c]
+    heapq.heappush(open_list,(0,[start_r, start_c]))
+    in_open_list[start_r, start_c] = True
+    distances   [start_r, start_c] = 0
+
+    while len(open_list) > 0 and [r,c] != [goal_r, goal_c]:
+        [r,c] = heapq.heappop(open_list)[1] 
+        in_closed_list[r,c] = True
+        neighbors = [[r+1, c],  [r,c+1],  [r-1, c],  [r,c-1]]
+        for [nr,nc] in neighbors:
+            if grid_map[nr,nc] > 40 or grid_map[nr,nc] < 0 or in_closed_list[nr,nc]:
+                continue
+            g = distances[r,c] + 1
+            h= abs(nr - goal_r) + abs(nc - goal_c)
+            f=g+h
+            if g < distances[nr,nc]:
+                distances[nr,nc]    = g
+                parent_nodes[nr,nc] = [r,c]
+            if not in_open_list[nr,nc]:
+                in_open_list[nr,nc] = True
+                heapq.heappush(open_list,(f,[nr,nc]))
+            execution_steps += 1
+
+    if [r,c] != [goal_r, goal_c]:
+        print "Cannot calculate path by A Star:'("
+        return []
+    print "Path calculated after " + str(execution_steps) + " steps."
+    path = []
+    while [parent_nodes[r,c][0],parent_nodes[r,c][1]] != [-1,-1]:
+        path.insert(0, [r,c])
+        [r,c] = parent_nodes[r,c]
+    return path
+
+
+def get_maps():
+    clt_static_map = rospy.ServiceProxy("/static_map"  , GetMap)
+    clt_cost_map   = rospy.ServiceProxy("/cost_map"    , GetMap)
+    clt_inflated   = rospy.ServiceProxy("/inflated_map", GetMap)
+    static_map     = clt_static_map()
+    static_map     = static_map.map
+    try:
+        inflated_map = clt_inflated()
+        inflated_map = inflated_map.map
+    except:
+        inflated_map = static_map
+        print("Cannot get inflated map. Using static map instead")
+    inflated_map = numpy.asarray(inflated_map.data)
+    inflated_map = numpy.reshape(inflated_map, (static_map.info.height, static_map.info.width))
+    try:
+        cost_map = clt_cost_map()
+        cost_map = cost_map.map
+    except:
+        cost_map = static_map
+        print("Cannot get cost map. Using static map instead")
+    cost_map = numpy.asarray(cost_map.data)
+    cost_map = numpy.reshape(cost_map, (static_map.info.height, static_map.info.width))
+    return [static_map, inflated_map, cost_map]
+
 
 def get_smooth_path(original_path, alpha, beta):
     #
@@ -63,8 +171,39 @@ def get_smooth_path(original_path, alpha, beta):
     gradient_mag = tolerance + 1                           # we have reached the local minimum.
     gradient     = [[0,0] for i in range(len(smooth_path))]# Gradient has N components of the form [x,y]. 
     epsilon      = 0.5                                     # This variable will weight the calculated gradient.
+    print("Smoothing path with  "+ str(len(smooth_path))+ "points, using: "+ str([alpha,beta]))
+    while gradient_mag > tolerance:
+        gradient_mag=0
+        [xi, yi]=smooth_path[0]
+        [xn, yn]=smooth_path[1]
+        [xo, yo]=original_path[0]
+        gx = alpha*(xi - xn)+ beta*(xi-xo)
+        gy = alpha*(yi - yn)+ beta*(yi-yo) 
+        [xi, yi]=[xi - epsilon*gx,yi- epsilon*gy]
+        smooth_path[0]=[xi,yi]
+        gradient_mag += gx**2+gy**2
 
-    
+        for i in range (1, len(smooth_path)-1):
+            [xi, yi]=smooth_path[i]
+            [xp, yp]=smooth_path[i-1]
+            [xn, yn]=smooth_path[i+1]
+            [xo, yo]=original_path[i]
+            gx = alpha*(2*xi -xp - xn)+ beta*(xi-xo)
+            gy = alpha*(2*yi -yp - yn)+ beta*(yi-yo) 
+            [xi, yi]=[xi - epsilon*gx,yi- epsilon*gy]
+            smooth_path[i]=[xi,yi]
+            gradient_mag += gx**2+gy**2
+        
+        [xi, yi]=smooth_path[-1]
+        [xn, yn]=smooth_path[-2]
+        [xo, yo]=original_path[-1]
+        gx = alpha*(xn - xp)+ beta*(xi-xo)
+        gy = alpha*(yn - yp)+ beta*(yi-yo) 
+        [xi, yi]=[xi - epsilon*gx,yi- epsilon*gy]
+        smooth_path[-1]=[xi,yi]
+        gradient_mag += gx**2+gy**2
+        gradient_mag= math.sqrt(gradient_mag)
+    print("Path smoothed succesfully  (y)")
     return smooth_path
 
 
