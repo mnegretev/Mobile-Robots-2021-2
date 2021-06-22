@@ -35,7 +35,7 @@ from nav_msgs.srv import GetMap
 from nav_msgs.srv import GetMapResponse
 from nav_msgs.srv import GetMapRequest
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "SALDAÑA_HERNANDEZ"
 static_map = None
 
 def get_inflated_map(static_map, inflation_cells):
