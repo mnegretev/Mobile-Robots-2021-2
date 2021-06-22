@@ -14,12 +14,13 @@ import numpy
 import heapq
 import rospy
 import copy
+import math
 from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Path
 from nav_msgs.srv import *
 from collections import deque
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "CASTILLO_SANCHEZ"
 
 def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
@@ -33,6 +34,61 @@ def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # https://docs.python.org/2/library/heapq.html
     #
 
+
+
+ #Cada nodo tiene su valor g (su distancia acumulada).
+        #g_values  ContendrA todos los valores g de los nodos
+    g_values = numpy.full(grid_map.shape, sys.maxint)
+    #Conjunto de nodos padre.
+        #Necesitamos un arreglo de tres dimensiones.
+    parent_nodes = numpy.full((grid_map.shape[0], grid_map.shape[1], 2), -1)
+    #agregar una bandera para cada nodo pare determinar si ya estA en la lista abierta o no
+    in_open_list = numpy.full(grid_map.shape, False)
+    in_close_list = numpy.full(grid_map.shape, False)
+    #contar el nUmero de pasos
+    steps = 0
+
+    #Cola con prioridad, serA la lista con los nodos del cual sacaremos
+        #el siguiente nodo a expandir.
+    open_list = []
+    #ANIadir un elemento a una cola con prioridad
+    heapq.heappush(open_list, (0,[start_r, start_c]))
+    g_values[start_r, start_c] = 0
+    #al inicio, se aNIade el nodo actual a la lista abierta
+        #este nodo resulta ser el nodo inicial
+    in_open_list[start_r, start_c] = True
+    [r,c] = [start_r, start_c]
+
+
+    #mientras la lista abierta no estE vacIa y que no hemos llegado a la meta
+    while len(open_list) > 0 and [r,c] != [goal_r, goal_c]:
+        [r,c] = heapq.heappop(open_list)[1]
+        in_close_list[r,c] = True
+        neighbours = [[r+1, c], [r-1, c], [r, c+1], [r, c-1]]
+        for[nr, nc] in neighbours:
+            if grid_map[nr, nc] != 0 or in_close_list[nr, nc]:
+                continue
+            g = g_values[r,c] + 1 + cost_map[nr][nc]
+
+            if g < g_values[nr, nc]:
+                g_values[nr,nc] = g
+                parent_nodes[nr,nc] = [r,c]
+            if not in_open_list[nr,nc]:
+                in_open_list[nr,nc] = True
+                heapq.heappush(open_list, (g, [nr,nc]))
+            steps+=1
+            
+    if[r, c] != [goal_r, goal_c]:
+        print("Cannot calculate path by Dijsktra :'(")
+        return []
+    path = []
+    while [parent_nodes[r,c][0], parent_nodes[r,c][1]] != [-1, -1]:
+        path.insert(0, [r,c])
+        [r,c] = parent_nodes[r,c]
+    print("Path calculated by Dijkstra after " + str(steps) + " steps")
+    return path
+
+
 def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
     # TODO:
@@ -45,6 +101,73 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # Documentation to implement priority queues in python can be found in
     # https://docs.python.org/2/library/heapq.html
     #
+
+
+
+ #Cada nodo tiene su valor g (su distancia acumulada).
+        #g_values  ContendrA todos los valores g de los nodos
+    g_values = numpy.full(grid_map.shape, sys.maxint)
+    #valores de f
+    f_values = numpy.full(grid_map.shape, sys.maxint)
+    #Conjunto de nodos padre.
+        #Necesitamos un arreglo de tres dimensiones.
+    parent_nodes = numpy.full((grid_map.shape[0], grid_map.shape[1], 2), -1)
+    #agregar una bandera para cada nodo pare determinar si ya estA en la lista abierta o no
+    in_open_list = numpy.full(grid_map.shape, False)
+    in_close_list = numpy.full(grid_map.shape, False)
+    #contar el nUmero de pasos
+    steps = 0
+
+    #Cola con prioridad, serA la lista con los nodos del cual sacaremos
+        #el siguiente nodo a expandir.
+    open_list = []
+    #ANIadir un elemento a una cola con prioridad
+    heapq.heappush(open_list, (0,[start_r, start_c]))
+    g_values[start_r, start_c] = 0
+    #establecemos el valor f del nodo inicial
+    f_values[start_r, start_c] = 0
+    #al inicio, se aNIade el nodo actual a la lista abierta
+        #este nodo resulta ser el nodo inicial
+    in_open_list[start_r, start_c] = True
+    [r,c] = [start_r, start_c]
+
+
+    #mientras la lista abierta no estE vacIa y que no hemos llegado a la meta
+    while len(open_list) > 0 and [r,c] != [goal_r, goal_c]:
+        [r,c] = heapq.heappop(open_list)[1]
+        in_close_list[r,c] = True
+        neighbours = [[r+1, c], [r-1, c], [r, c+1], [r, c-1]]
+        for[nr, nc] in neighbours:
+            if grid_map[nr, nc] != 0 or in_close_list[nr, nc]:
+                continue
+            g = g_values[r,c] + 1 + cost_map[nr][nc]
+            #distancia Manhattan
+            h = numpy.abs(nr-goal_r)-numpy.abs(nc-goal_c)
+            #calculo de f
+            f = g + h
+            if g < g_values[nr, nc]:
+                g_values[nr,nc] = g
+                #registramos el valor de f
+                f_values[nr,nc] = f
+                parent_nodes[nr,nc] = [r,c]
+            if not in_open_list[nr,nc]:
+                in_open_list[nr,nc] = True
+                #Se agrega a la lista el siguiente nodo
+                    #aqui nos guiaremos del nodo con menor valor f
+                heapq.heappush(open_list, (f, [nr,nc]))
+            steps+=1
+            
+    if[r, c] != [goal_r, goal_c]:
+        print("Cannot calculate path by A* :'(")
+        return []
+    path = []
+    while [parent_nodes[r,c][0], parent_nodes[r,c][1]] != [-1, -1]:
+        path.insert(0, [r,c])
+        [r,c] = parent_nodes[r,c]
+    print("Path calculated by A*  after " + str(steps) + " steps")
+    return path
+
+
 
 def get_smooth_path(original_path, alpha, beta):
     #
@@ -64,7 +187,64 @@ def get_smooth_path(original_path, alpha, beta):
     gradient     = [[0,0] for i in range(len(smooth_path))]# Gradient has N components of the form [x,y]. 
     epsilon      = 0.5                                     # This variable will weight the calculated gradient.
 
-    
+    print("Smoothing path with " + str(len(smooth_path)) + " points, using: " + str([alpha, beta]))
+    while gradient_mag > tolerance:
+
+        #inicializando la magnitud del gradiente
+        gradient_mag = 0
+
+        #Haciendo el calculo para el primer punto de la ruta
+        [xi,yi] = smooth_path[0] #actual
+        [xn,yn] = smooth_path[1] #next
+        [xo,yo] = original_path[0] #original
+        #calculo del gradiente
+        gx = alpha*(xi - xn) +beta*(xi - xo) 
+        gy = alpha*(yi - yn) +beta*(yi - yo)
+
+        [xi,yi] = [xi - epsilon*gx, yi - epsilon*gy]
+        smooth_path[i] = [xi,yi]
+        
+        #magnitud del gradiente
+        gradient_mag += gx**2 + gy**2
+        
+        #inicio descenso por gradiente
+        for i in range(1, len(smooth_path)-1):
+            [xi,yi] = smooth_path[i] #actual
+            [xp,yp] = smooth_path[i-1] #previous
+            [xn,yn] = smooth_path[i+1] #next
+            [xo,yo] = original_path[i] #original
+
+            #Calculando el gradiente
+            gx = alpha*(2*xi - xp - xn) +beta*(xi - xo) 
+            gy = alpha*(2*yi - yp - yn) +beta*(yi - yo)
+            
+            #movemos a cada una de las componentes en sentido contrario al gradiente
+                #que tan grande sera el paso?
+                #de acuerdo con el valor de la epsilon
+            [xi,yi] = [xi - epsilon*gx, yi - epsilon*gy]
+            smooth_path[i] = [xi,yi]
+            #fin descenso por gradiente
+            
+            #magnitud del gradiente
+            gradient_mag += gx**2 + gy**2
+
+        
+         #Aplica al ultimo punto de la ruta
+        [xi,yi] = smooth_path[-1] #actual que seria el ultimo punto
+        [xp,yp] = smooth_path[-2] #el penultimo
+        [xo,yo] = original_path[-1] #original
+        #gradiente
+        gx = alpha*(xi - xp)+beta*(xi - xo) 
+        gy = alpha*(yi - yp)+beta*(yi - yo)
+        [xi,yi] = [xi - epsilon*gx, yi - epsilon*gy]
+        smooth_path[-1] = [xi,yi]
+        #magnitud del gradiente
+        gradient_mag += gx**2 + gy**2
+
+        gradient_mag = math.sqrt(gradient_mag)
+       
+    print("Path smoothed succesfully :D")
+
     return smooth_path
 
 
