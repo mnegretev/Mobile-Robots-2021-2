@@ -19,7 +19,7 @@ from nav_msgs.msg import Path
 from nav_msgs.srv import *
 from collections import deque
 
-NAME = "SALDAÑA_HERNANDEZ"
+NAME = "SALDANA_HERNANDEZ"
 
 def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     g_values        = numpy.full(grid_map.shape, sys.maxint)
