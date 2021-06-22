@@ -14,14 +14,16 @@ import numpy
 import heapq
 import rospy
 import copy
+import math
 from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Path
 from nav_msgs.srv import *
 from collections import deque
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "GUZMAN_MARTINEZ"
 
-def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
+
+def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
     # TODO:
     # Write a Dijkstra algorithm to find a path in an occupancy grid map given the start cell
@@ -33,7 +35,57 @@ def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # https://docs.python.org/2/library/heapq.html
     #
 
-def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
+    g_values = numpy.full(grid_map.shape, sys.maxint)
+    f_values = numpy.full(grid_map.shape, sys.maxint)
+    parent_nodes = numpy.full((grid_map.shape[0], grid_map.shape[1], 2), -1)
+    in_open_list = numpy.full(grid_map.shape, False)
+    in_closed_list = numpy.full(grid_map.shape, False)
+    open_list= []
+    heapq.heappush(open_list, (0,[start_r,start_c]))
+    g_values[start_r, start_c]=0
+    f_values[start_r,start_c]=0
+    in_open_list[start_r, start_c] = True
+    [r,c] = [start_r, start_c]
+    steps=0
+    while len(open_list) > 0 and [r,c] !=[goal_r, goal_c]:
+        [r,c] = heapq.heappop(open_list)[1]
+        in_closed_list[r,c]= True
+        neighbors = [[r+1,c], [r-1, c], [r, c+1], [r,c-1]]
+        for [nr,nc] in neighbors:
+            if grid_map[nr,nc] !=0 or in_closed_list[nr,nc]:
+                continue
+            g= g_values[r,c] +1 + cost_map[nr][nc]
+            h= abs(goal_r-nr) + abs(goal_c-nc)
+            f= g+h
+            if g< g_values[nr, nc]:
+                g_values[nr,nc] = g
+                f_values[nr,nc] = f
+                parent_nodes[nr,nc]=[r,c]
+            if not in_open_list[nr,nc]:
+                if grid_map[nr,nc] !=0 or in_closed_list[nr,nc]:
+                    continue
+            g= g_values[r,c] +1 + cost_map[nr][nc]
+            h= abs(goal_r-nr) + abs(goal_c-nc)
+            f= g+h
+            if g< g_values[nr, nc]:
+                g_values[nr,nc] = g
+                f_values[nr,nc] = f
+                parent_nodes[nr,nc]=[r,c]
+            if not in_open_list[nr,nc]:
+                in_open_list[nr,nc] = True
+                heapq.heappush(open_list, (f, [nr, nc]))
+            steps+=1
+    if [r,c] != [goal_r, goal_c]:
+        print("Cannot calculate path by A* :'(")
+        return[]
+    path=[]
+    while [parent_nodes[r,c][0], parent_nodes[r,c][1]] !=[-1,-1]:
+        path.insert(0,[r,c])
+        [r,c] = parent_nodes[r,c]
+    print("Path calculated by A* after " +str(steps) + "steps")
+    return path
+
+def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
     # TODO:
     # Write a A* algorithm to find a path in an occupancy grid map given the start cell
@@ -45,7 +97,40 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # Documentation to implement priority queues in python can be found in
     # https://docs.python.org/2/library/heapq.html
     #
-
+    g_values = numpy.full(grid_map.shape, sys.maxint)
+    parent_nodes = numpy.full((grid_map.shape[0], grid_map.shape[1], 2), -1)
+    in_open_list = numpy.full(grid_map.shape, False)
+    in_closed_list = numpy.full(grid_map.shape, False)
+    open_list= []
+    heapq.heappush(open_list, (0,[start_r,start_c]))
+    g_values[start_r, start_c]=0
+    in_open_list[start_r, start_c] = True
+    [r,c] = [start_r, start_c]
+    steps=0
+    while len(open_list) > 0 and [r,c] !=[goal_r, goal_c]:
+        [r,c] = heapq.heappop(open_list)[1]
+        in_closed_list[r,c]= True
+        neighbors = [[r+1,c], [r-1, c], [r, c+1], [r,c-1]]
+        for [nr,nc] in neighbors:
+            if grid_map[nr,nc] !=0 or in_closed_list[nr,nc]:
+                continue
+            g= g_values[r,c] +1 + cost_map[nr][nc]
+            if g< g_values[nr, nc]:
+                g_values[nr,nc] = g
+                parent_nodes[nr,nc]=[r,c]
+            if not in_open_list[nr,nc]:
+                in_open_list[nr,nc] = True
+                heapq.heappush(open_list, (g, [nr, nc]))
+            steps+=1
+    if [r,c] != [goal_r, goal_c]:
+        print("Cannot calculate path by Dijsktra :'(")
+        return[]
+    path=[]
+    while [parent_nodes[r,c][0], parent_nodes[r,c][1]] !=[-1,-1]:
+        path.insert(0,[r,c])
+        [r,c] = parent_nodes[r,c]
+    print("Path calculated by Dijsktra after " +str(steps) + "steps")
+    return path
 def get_smooth_path(original_path, alpha, beta):
     #
     # TODO:
@@ -61,10 +146,39 @@ def get_smooth_path(original_path, alpha, beta):
     smooth_path  = copy.deepcopy(original_path)            # At the beginnig, the smooth path is the same than the original path.
     tolerance    = 0.00001                                 # If gradient magnitude is less than a tolerance, we consider.
     gradient_mag = tolerance + 1                           # we have reached the local minimum.
-    gradient     = [[0,0] for i in range(len(smooth_path))]# Gradient has N components of the form [x,y]. 
+    gradient     = [[0,0] for i in range(len(smooth_path))] # Gradient has N components of the form [x,y]. 
     epsilon      = 0.5                                     # This variable will weight the calculated gradient.
-
-    
+    print("Smoothing path with" +str(len(smooth_path)) + "points, using" +str([alpha,beta]))
+    while gradient_mag > tolerance:
+            gradient_mag=0
+            [xi,yi]=smooth_path[0]
+            [xn,yn]=smooth_path[1]
+            [xo,yo]= original_path[0]
+            gx = alpha*(xi - xn) + beta*(xi - xo)
+            gy = alpha*(yo - yn) + beta*(yi - yo)
+            [xi,yi] = [xi -epsilon*gx, yi -epsilon*gy]
+            smooth_path[0]=[xi,yi]
+            gradient_mag += gx**2 + gy**2
+            for i in range(1,len(smooth_path)-1):
+                [xi,yi]=smooth_path[i]
+                [xp,yp]=smooth_path[i-1]
+                [xn,yn]=smooth_path[i+1]
+                [xo,yo]= original_path[i]
+                gx=alpha*(2*xi -xp -xn) + beta*(xi-xo)
+                gy=alpha*(2*yo -yp -yn) + beta*(yi-yo)
+                [xi,yi] = [xi -epsilon*gx, yi -epsilon*gy]
+                smooth_path[i]=[xi,yi]
+                gradient_mag+= gx**2 + gy**2
+            [xi,yi]=smooth_path[-1]
+            [xn,yn]=smooth_path[-2]
+            [xo,yo]= original_path[-1]
+            gx=alpha*(xn -xp) + beta*(xi-xo)
+            gy=alpha*(yn -yp) + beta*(yi-yo)
+            [xi,yi] = [xi -epsilon*gx, yi -epsilon*gy]
+            smooth_path[-1]=[xi,yi]
+            gradient_mag+= gx**2 + gy**2
+            gradient_mag = math.sqrt(gradient_mag)
+    print("Path smoothed succesfully (Y)")
     return smooth_path
 
 

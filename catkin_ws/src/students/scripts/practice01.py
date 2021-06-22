@@ -104,6 +104,7 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
             f= g+h
             if g< g_values[nr, nc]:
                 g_values[nr,nc] = g
+                f_values[nr,nc] = f
                 parent_nodes[nr,nc]=[r,c]
             if not in_open_list[nr,nc]:
                 in_open_list[nr,nc] = True
