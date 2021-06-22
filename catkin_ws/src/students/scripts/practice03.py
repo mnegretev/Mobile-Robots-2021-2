@@ -202,7 +202,7 @@ def get_smooth_path(original_path, alpha, beta):
         gy = alpha*(yi - yn) +beta*(yi - yo)
 
         [xi,yi] = [xi - epsilon*gx, yi - epsilon*gy]
-        smooth_path[i] = [xi,yi]
+        smooth_path[0] = [xi,yi]
         
         #magnitud del gradiente
         gradient_mag += gx**2 + gy**2
