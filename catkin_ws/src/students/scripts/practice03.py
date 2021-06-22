@@ -10,7 +10,7 @@
 #
 
 import sys
-import numpy
+import numpy as np
 import heapq
 import rospy
 import copy
@@ -19,7 +19,7 @@ from nav_msgs.msg import Path
 from nav_msgs.srv import *
 from collections import deque
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "ALVAREZ_PEREZ"
 
 def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
@@ -33,6 +33,48 @@ def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # https://docs.python.org/2/library/heapq.html
     #
 
+    g_values=np.full(np.shape(grid_map),sys.maxint)#Almacena los valores de g del mapa
+    parent_nodes=np.full((np.shape(grid_map)[0],np.shape(grid_map)[1],2),-1)#Creamos lista de puntos
+    in_open_list=np.full(np.shape(grid_map),False)#Puntos abiertos
+    in_close_list=np.full(np.shape(grid_map),False)#Puntos cerrados
+    
+    open_list=[]
+    heapq.heappush(open_list,(0,[start_r,start_c]))#Posicion inicial
+    g_values[start_r,start_c]=0
+    in_open_list[start_r,start_c]=True
+    steps=0
+    path=[]
+
+    [r,c]=[start_r,start_c]
+
+    while len(open_list)>0 and [r,c]!=[goal_r,goal_c]:
+        [r,c]=heapq.heappop(open_list)[1]
+        in_close_list[r,c]=True 
+        neighbors=[[r+1,c],[r-1,c],[r,c+1],[r,c-1]]#Nodos vecinos
+        for [nr,nc]in neighbors:
+            if grid_map[nr,nc]!=0 or in_close_list[nr,nc]:
+                continue
+            g=g_values[r,c]+1+cost_map[r,c]#Creamos mayor costo a las rutas con distancias mas largas
+            if g<g_values[nr,nc]:#Comparamos las rutas
+                g_values[nr,nc]=g #Verificamos rutas
+                parent_nodes[nr,nc]=[r,c]
+            if not in_open_list[nr,nc]: 
+                in_open_list[nr,nc]=True
+                heapq.heappush(open_list,(g,[nr,nc]))
+                
+            steps+=1
+       
+    if[r,c]!=[goal_r,goal_c]:
+        print("Cannot calculate path by Dijsktra :c")
+        return[]
+        path = []
+   
+    while [parent_nodes[r,c][0],parent_nodes[r,c][1]]!=[-1,-1]:
+        path.insert(0,[r,c])
+        [r,c]=parent_nodes[r,c]
+    print("Path calculated by Dijsktra after "+str(steps)+" steps.")
+    return path
+
 def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
     # TODO:
@@ -45,6 +87,53 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # Documentation to implement priority queues in python can be found in
     # https://docs.python.org/2/library/heapq.html
     #
+    g_values=np.full(np.shape(grid_map),sys.maxint)#Almacena los valores de g del mapa
+    f_values=np.full(numpy.shape(grid_map),sys.maxint)
+    parent_nodes=np.full((np.shape(grid_map)[0],np.shape(grid_map)[1],2),-1)#Creamos lista de puntos
+    in_open_list=np.full(np.shape(grid_map),False)#Puntos abiertos
+    in_close_list=np.full(np.shape(grid_map),False)#Puntos cerrados
+    
+    open_list=[]
+    heapq.heappush(open_list,(0,[start_r,start_c]))#Posicion inicial
+    g_values[start_r,start_c]=0
+    f_values[start_r,start_c]=0
+    in_open_list[start_r,start_c]=True
+    steps=0
+    path=[]
+
+    [r,c]=[start_r,start_c]
+
+    while len(open_list)>0 and [r,c]!=[goal_r,goal_c]:
+        [r,c]=heapq.heappop(open_list)[1]
+        in_close_list[r,c]=True 
+        neighbors=[[r+1,c],[r-1,c],[r,c+1],[r,c-1]]#Nodos vecinos
+        for [nr,nc]in neighbors:
+            if grid_map[nr,nc]!=0 or in_close_list[nr,nc]:
+                continue
+            g=g_values[r,c]+1+cost_map[r,c]#Creamos mayor costo a las rutas con distancias mas largas
+            h= abs(nr - goal_r) + abs(nc - goal_c)
+            f=g+h
+
+            if g<g_values[nr,nc]:#Comparamos las rutas
+                g_values[nr,nc]=g #Verificamos rutas
+		f_values[nr,nc]=f
+                parent_nodes[nr,nc]=[r,c]
+            if not in_open_list[nr,nc]: 
+                in_open_list[nr,nc]=True
+                heapq.heappush(open_list,(f,[nr,nc]))
+                
+            steps+=1
+       
+    if[r,c]!=[goal_r,goal_c]:
+        print("Cannot calculate path by Dijsktra :c")
+        return[]
+        path = []
+   
+    while [parent_nodes[r,c][0],parent_nodes[r,c][1]]!=[-1,-1]:
+        path.insert(0,[r,c])
+        [r,c]=parent_nodes[r,c]
+    print("Path calculated by Dijsktra after "+str(steps)+" steps.")
+    return path
 
 def get_smooth_path(original_path, alpha, beta):
     #
@@ -64,7 +153,41 @@ def get_smooth_path(original_path, alpha, beta):
     gradient     = [[0,0] for i in range(len(smooth_path))]# Gradient has N components of the form [x,y]. 
     epsilon      = 0.5                                     # This variable will weight the calculated gradient.
 
-    
+    print("Smoothing path with "+str(len(smooth_path))+ " points, using " +str([alpha,beta]))                                  # This variable will weight the calculated gradient.
+    while gradient_mag>tolerance:
+        gradient_mag=0
+        [xi,yi]=smooth_path[0]
+        [xn,yn]=smooth_path[1]
+        [xo,yo]=original_path[0]
+        gx=alpha*(xi-xn)+beta*(xi-xo)
+        gy=alpha*(yi-yn)+beta*(yi-yo)
+        [xi,yi]=[xi-epsilon*gx,yi-epsilon*gy]
+        smooth_path[0]=[xi,yi]
+        gradient_mag+=gx**2+gy**2 
+        for i in range(1,len(smooth_path)-1):
+            [xp,yp]=smooth_path[i-1]
+            [xi,yi]=smooth_path[i]
+            [xn,yn]=smooth_path[i+1]
+            [xo,yo]=original_path[i]
+            gx=alpha*(2*xi-xp-xn)+beta*(xi-xo)
+            gy=alpha*(2*yi-yp-yn)+beta*(yi-yo)
+            [xi,yi]=[xi-epsilon*gx,yi-epsilon*gy]
+            smooth_path[i]=[xi,yi]
+            gradient_mag+=gx**2+gy**2 
+
+        
+        [xi,yi]=smooth_path[-1]
+        [xp,yp]=smooth_path[-2]
+        [xo,yo]=original_path[-1]
+        gx=alpha*(xi-xp)+beta*(xi-xo)
+        gy=alpha*(yi-yp)+beta*(yi-yo)
+        [xi,yi]=[xi-epsilon*gx,yi-epsilon*gy]
+        smooth_path[-1]=[xi,yi]
+        gradient_mag+=gx**2+gy**2
+        gradient_mag=math.sqrt(gradient_mag)
+
+
+    print("Finish")
     return smooth_path
 
 
