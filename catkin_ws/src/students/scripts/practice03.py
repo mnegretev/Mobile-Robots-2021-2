@@ -19,53 +19,160 @@ from nav_msgs.msg import Path
 from nav_msgs.srv import *
 from collections import deque
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "MONTERRUBIO_LOPEZ"
 
 def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
-    #
-    # TODO:
-    # Write a Dijkstra algorithm to find a path in an occupancy grid map given the start cell
-    # [start_r, start_c], the goal cell [goal_r, goal_c] and the map 'grid_map'.
-    # Return the set of points of the form [[start_r, start_c], [r1,c1], [r2,c2], ..., [goal_r, goal_c]]
-    # If path cannot be found, return an empty tuple []
-    # Hint: Use a priority queue to implement the open list. 
-    # Documentation to implement priority queues in python can be found in
-    # https://docs.python.org/2/library/heapq.html
-    #
+	#
+	# TODO:
+	# Write a Dijkstra algorithm to find a path in an occupancy grid map given the start cell
+	# [start_r, start_c], the goal cell [goal_r, goal_c] and the map 'grid_map'.
+	# Return the set of points of the form [[start_r, start_c], [r1,c1], [r2,c2], ..., [goal_r, goal_c]]
+	# If path cannot be found, return an empty tuple []
+	# Hint: Use a priority queue to implement the open list. 
+	# Documentation to implement priority queues in python can be found in
+	# https://docs.python.org/2/library/heapq.html
+	#
+	g_values        = numpy.full(grid_map.shape,sys.maxint) 
+	parent_nodes    = numpy.full((grid_map.shape[0],grid_map.shape[1],2),-1)
+	in_open_list    = numpy.full(grid_map.shape,False)
+	in_closed_list  = numpy.full(grid_map.shape,False)
+	steps = 0
+
+	open_list =[]
+	heapq.heappush(open_list,(0,[start_r,start_c]))
+	g_values[start_r,start_c] =0
+	in_open_list[start_r, start_c] = True
+	[r,c] = [start_r, start_c]  
+
+	while len(open_list)> 0 and [r,c] != [goal_r, goal_c]:
+		[r,c] = heapq.heappop(open_list)[1]
+		in_closed_list[r,c] = True
+		neighbors = [[r+1,c],[r-1,c],[r,c+1],[r,c-1]]
+		for [nr,nc] in neighbors: 
+			if grid_map[nr,nc] != 0 or in_closed_list[nr,nc]:
+				continue
+			g = g_values[r,c] + 1 + cost_map[nr][nc]
+
+			if g < g_values[nr,nc]:
+				g_values[nr,nc] =   g
+				parent_nodes[nr,nc] = [r,c]
+			if not in_open_list[nr,nc]:
+				in_open_list[nr,nc] = True
+				heapq.heappush(open_list,(g,[nr,nc]))
+			steps += 1  
+
+
+	if [r,c] != [goal_r,goal_c]:
+		print("Cannot calculate path by Dijsktra")
+		return[]
+	path=[]
+	while [parent_nodes[r,c][0],parent_nodes[r,c][1]] != [-1,-1]:
+		path.insert(0,[r,c])
+		[r,c] = parent_nodes[r,c]
+	print("Path calculated by Dijkstra after " + str(steps) + " steps")
+	return path	
 
 def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
-    #
-    # TODO:
-    # Write a A* algorithm to find a path in an occupancy grid map given the start cell
-    # [start_r, start_c], the goal cell [goal_r, goal_c] and the map 'grid_map'.
-    # Return the set of points of the form [[start_r, start_c], [r1,c1], [r2,c2], ..., [goal_r, goal_c]]
-    # If path cannot be found, return an empty tuple []
-    # Use Manhattan distance as heuristic function
-    # Hint: Use a priority queue to implement the open list
-    # Documentation to implement priority queues in python can be found in
-    # https://docs.python.org/2/library/heapq.html
-    #
+	#
+	# TODO:
+	# Write a A* algorithm to find a path in an occupancy grid map given the start cell
+	# [start_r, start_c], the goal cell [goal_r, goal_c] and the map 'grid_map'.
+	# Return the set of points of the form [[start_r, start_c], [r1,c1], [r2,c2], ..., [goal_r, goal_c]]
+	# If path cannot be found, return an empty tuple []
+	# Use Manhattan distance as heuristic function
+	# Hint: Use a priority queue to implement the open list
+	# Documentation to implement priority queues in python can be found in
+	# https://docs.python.org/2/library/heapq.html
+	#
+	g_values        = numpy.full(grid_map.shape,sys.maxint)
+	f_values        = numpy.full(grid_map.shape,sys.maxint)
+	parent_nodes    = numpy.full((grid_map.shape[0],grid_map.shape[1],2),-1)
+	in_open_list    = numpy.full(grid_map.shape,False)
+	in_closed_list  = numpy.full(grid_map.shape,False)
+	steps = 0
+
+	open_list =[]
+	heapq.heappush(open_list,(0,[start_r,start_c]))
+	g_values[start_r,start_c] = 0
+	f_values[start_r,start_c] = 0
+	in_open_list[start_r, start_c] = True
+	[r,c] = [start_r, start_c]  #current node
+
+	while len(open_list)> 0 and [r,c] != [goal_r, goal_c]:
+		[r,c] = heapq.heappop(open_list)[1]
+		in_closed_list[r,c] = True
+		neighbors = [[r+1,c],[r-1,c],[r,c+1],[r,c-1]]
+		for [nr,nc] in neighbors: 
+			if grid_map[nr,nc] != 0 or in_closed_list[nr,nc]:
+				continue
+			g = g_values[r,c] + 1 + cost_map[nr][nc] #calculate the value of g
+			h = numpy.abs(goal_r-nr) + numpy.abs(goal_c-nc)
+			f = g + h #calculate the value of f
+			#f_values[nr,nc] =   f #the value of f is recorded
+			if g < g_values[nr,nc]:
+				g_values[nr,nc] =   g
+				f_values[nr,nc] =   f #the value of f is recorded
+				parent_nodes[nr,nc] = [r,c]			   
+			if not in_open_list[nr,nc]:
+				in_open_list[nr,nc] = True
+				heapq.heappush(open_list,(f,[nr,nc]))
+			steps += 1  
+
+
+	if [r,c] != [goal_r,goal_c]:
+		print("Cannot calculate path by A-Star")
+		return[]
+	path = [] 
+	while [parent_nodes[r,c][0],parent_nodes[r,c][1]] != [-1,-1]:
+		path.insert(0,[r,c])
+		[r,c] = parent_nodes[r,c]
+	print("Path calculated by A-Star after " + str(steps) + " steps")
+	return path	
 
 def get_smooth_path(original_path, alpha, beta):
-    #
-    # TODO:
-    # Write an algorithm to smooth the 'original_path' and return the new path.
-    # The path is given as a set of points [x,y] in the form:
-    # [[x0,y0], [x1,y1], ..., [xn,ym]].
-    # Example. The following line of code
-    # [xo_i,yo_i] = original_path[i]
-    # stores the x,y coordinates of the i-th point of the original path
-    # in the variables xo_i and yo_i respectively. 
-    #
-    #
-    smooth_path  = copy.deepcopy(original_path)            # At the beginnig, the smooth path is the same than the original path.
-    tolerance    = 0.00001                                 # If gradient magnitude is less than a tolerance, we consider.
-    gradient_mag = tolerance + 1                           # we have reached the local minimum.
-    gradient     = [[0,0] for i in range(len(smooth_path))]# Gradient has N components of the form [x,y]. 
-    epsilon      = 0.5                                     # This variable will weight the calculated gradient.
+	#
+	# TODO:
+	# Write an algorithm to smooth the 'original_path' and return the new path.
+	# The path is given as a set of points [x,y] in the form:
+	# [[x0,y0], [x1,y1], ..., [xn,ym]].
+	# Example. The following line of code
+	# [xo_i,yo_i] = original_path[i]
+	# stores the x,y coordinates of the i-th point of the original path
+	# in the variables xo_i and yo_i respectively. 
+	#
+	#
+	smooth_path  = copy.deepcopy(original_path)            # At the beginnig, the smooth path is the same than the original path.
+	tolerance    = 0.00001                                 # If gradient magnitude is less than a tolerance, we consider.
+	gradient_mag = tolerance + 1                           # we have reached the local minimum.
+	gradient     = [[0,0] for i in range(len(smooth_path))]# Gradient has N components of the form [x,y]. 
+	epsilon      = 0.5                                     # This variable will weight the calculated gradient.
 
-    
-    return smooth_path
+	N = len(smooth_path) - 1 #Higher index
+
+	while gradient_mag > tolerance:
+		#For X
+		gradient[0][0] = alpha* (smooth_path[0][0] - original_path[0][0]) - beta * (smooth_path[1][0]-smooth_path[0][0])
+		smooth_path[0][0] = smooth_path[0][0] - epsilon * gradient[0][0]
+		#For Y
+		gradient[0][1] = alpha* (smooth_path[0][1] - original_path[0][1]) - beta * (smooth_path[1][1]-smooth_path[0][1])
+		smooth_path[0][1] = smooth_path[0][1] - epsilon * gradient[0][1]
+		for i in range(1,N - 1):
+			#For X
+			gradient[i][0] = alpha * (smooth_path[i][0] - original_path[i][0]) + beta * (2*smooth_path[i][0] - smooth_path[i-1][0] - smooth_path[i+1][0])
+			smooth_path[i][0] = smooth_path[i][0] - epsilon * gradient[i][0]
+			#For Y
+			gradient[i][1] = alpha * (smooth_path[i][1] - original_path[i][1]) + beta * (2*smooth_path[i][1] - smooth_path[i-1][1] - smooth_path[i+1][1])
+			smooth_path[i][1] = smooth_path[i][1] - epsilon * gradient[i][1]
+		#For X
+		gradient[N][0] = alpha * (smooth_path[N][0] - original_path[N][0]) + beta * (smooth_path[N][0] - smooth_path[N-1][0])
+		smooth_path[N][0] = smooth_path[N][0] - epsilon * gradient[N][0]
+		#For Y
+		gradient[N][1] = alpha * (smooth_path[N][1] - original_path[N][1]) + beta * (smooth_path[N][1] - smooth_path[N-1][1])
+		smooth_path[N][1] = smooth_path[N][1] - epsilon * gradient[N][1]
+
+		gradient_mag = numpy.linalg.norm(gradient)
+
+	return smooth_path
 
 
 def get_maps():
