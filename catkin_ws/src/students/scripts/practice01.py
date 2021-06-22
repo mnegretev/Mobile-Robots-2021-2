@@ -83,8 +83,8 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # https://docs.python.org/2/library/heapq.html
     #
     
-    g_values        = numpy.full(grid_map.shape, sys.maxint)
-    f_values        = numpy.full(grid_map.shape, sys.maxint)
+    g_values        = numpy.full(grid_map.shape, float("inf"))
+    f_values        = numpy.full(grid_map.shape, float("inf"))
     parent_nodes   = numpy.full((grid_map.shape[0], grid_map.shape[1],2),-1)
     in_open_list    = numpy.full(grid_map.shape, False)
     in_closed_list  = numpy.full(grid_map.shape, False)
@@ -105,10 +105,11 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
             if grid_map[nr,nc] != 0 or in_closed_list[nr,nc]:
                 continue
             g = g_values[r,c] + 1 + cost_map[nr][nc]
-            h = numpy.abs(nr-goal_r)-numpy.abs(nc-goal_c)
+            h = abs(nr-goal_r) - abs(nc-goal_c)
             f = g + h
             if g < g_values[nr,nc]:
-                g_values[nr,nc] = g
+                g_values[nr, nc] = g
+                f_values[nr, nc] = f
                 parent_nodes[nr,nc] = [r,c]
             if not in_open_list[nr,nc]:
                 in_open_list[nr,nc] = True
