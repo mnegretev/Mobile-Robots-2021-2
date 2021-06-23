@@ -65,7 +65,7 @@ def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     while [parent_nodes[r,c][0], parent_nodes[r,c][1]] !=[-1,-1]:
 	    path.insert(0,[r,c])
 	    [r,c] = parent_nodes[r,c]
-    print("Path calculated by Dijsktra after " +str(steps) + "steps")
+    print("Dijsktra: " +str(steps) + "steps")
     return path
 
 
@@ -184,7 +184,7 @@ def callback_a_star(req):
     return generic_callback(req, 'a_star')
 
 def main():
-    print ("PRACTICE 01 - " + NAME)
+    print("PRACTICE 01 - " + NAME)
     rospy.init_node("practice01")
     rospy.Service('/navigation/path_planning/dijkstra_search', GetPlan, callback_dijkstra)
     rospy.Service('/navigation/path_planning/a_star_search'  , GetPlan, callback_a_star)
