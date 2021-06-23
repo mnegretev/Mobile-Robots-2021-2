@@ -13,7 +13,7 @@ import rospy
 from sensor_msgs.msg   import LaserScan
 from geometry_msgs.msg import Twist
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "Gerardo_Pastor"
 
 def callback_laser_scan(msg):
     #
@@ -26,7 +26,7 @@ def callback_laser_scan(msg):
 
 def main():
     global obstacle
-    print "PRACTICE 00 - " + NAME
+    print ("PRACTICE 00 - " + NAME)
     rospy.init_node("practice00")
     rospy.Subscriber("/scan", LaserScan, callback_laser_scan)
     pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=10)

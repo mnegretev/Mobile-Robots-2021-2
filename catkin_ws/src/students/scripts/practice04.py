@@ -19,7 +19,7 @@ from nav_msgs.srv import GetPlanRequest
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import PoseStamped
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "Gerardo_Pastor"
 
 pub_cmd_vel = None
 loop        = None
@@ -72,7 +72,7 @@ def follow_path(path):
     return
     
 def callback_global_goal(msg):
-    print "Calculatin path from robot pose to " + str([msg.pose.position.x, msg.pose.position.y])
+    print ("Calculatin path from robot pose to " + str([msg.pose.position.x, msg.pose.position.y]))
     clt_plan_path = rospy.ServiceProxy('/navigation/path_planning/a_star_search', GetPlan)
     [robot_x, robot_y, robot_a] = get_robot_pose(listener)
     req = GetPlanRequest()
@@ -81,10 +81,10 @@ def callback_global_goal(msg):
     req.goal.pose.position.x  = msg.pose.position.x
     req.goal.pose.position.y  = msg.pose.position.y
     path = clt_plan_path(req).plan
-    print "Following path with " + str(len(path.poses)) + " points..."
+    print ("Following path with " + str(len(path.poses)) + " points...")
     path =[[p.pose.position.x, p.pose.position.y] for p in path.poses]
     follow_path(path)
-    print "Global goal point reached"
+    print ("Global goal point reached")
 
 def get_robot_pose(listener):
     try:
@@ -101,7 +101,7 @@ def get_robot_pose(listener):
 
 def main():
     global pub_cmd_vel, loop, listener
-    print "PRACTICE 04 - " + NAME
+    print ("PRACTICE 04 - " + NAME)
     rospy.init_node("practice04")
     rospy.Subscriber('/move_base_simple/goal', PoseStamped, callback_global_goal)
     pub_cmd_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=10)

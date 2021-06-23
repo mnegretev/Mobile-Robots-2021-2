@@ -18,7 +18,7 @@ from nav_msgs.msg import Path
 from nav_msgs.srv import *
 from collections import deque
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "Gerardo_Pastor"
 
 def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     #
@@ -43,7 +43,7 @@ def dijkstra(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     [r,c] = [start_r, start_c]
     steps=0
 
-    while len(open_list) > 0 and [r,c] !=[goal_r, goal_c]:
+    while len(open_list) > 0 and [r,c] != [goal_r, goal_c]:
         [r,c] = heapq.heappop(open_list)[1]
         in_closed_list[r,c]= True
         neighbors = [[r+1,c], [r-1, c], [r, c+1], [r,c-1]]
@@ -184,7 +184,7 @@ def callback_a_star(req):
     return generic_callback(req, 'a_star')
 
 def main():
-    print "PRACTICE 01 - " + NAME
+    print ("PRACTICE 01 - " + NAME)
     rospy.init_node("practice01")
     rospy.Service('/navigation/path_planning/dijkstra_search', GetPlan, callback_dijkstra)
     rospy.Service('/navigation/path_planning/a_star_search'  , GetPlan, callback_a_star)

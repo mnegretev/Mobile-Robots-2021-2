@@ -15,7 +15,7 @@ import rospy
 from sensor_msgs.msg import PointCloud2
 from geometry_msgs.msg import PointStamped
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "Gerardo_Pastor"
 
 def segment_by_color(img_bgr, points):
     #
@@ -60,7 +60,7 @@ def callback_point_cloud(msg):
 
 def main():
     global pub_point
-    print "PRACTICE 08 - " + NAME
+    print ("PRACTICE 08 - " + NAME)
     rospy.init_node("practice08")
     rospy.Subscriber("/kinect/points", PointCloud2, callback_point_cloud)
     pub_point = rospy.Publisher('/detected_object', PointStamped, queue_size=10)

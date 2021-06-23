@@ -17,7 +17,7 @@ import rospy
 import rospkg
 from cv_bridge import CvBridge, CvBridgeError
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "Gerardo_Pastor"
 
 def evaluate(weights, image):
     #
@@ -29,7 +29,7 @@ def evaluate(weights, image):
     return 0.5
 
 def train_perceptron(weights, images, labels, desired_digit):
-    print "Training perceptron for digit " + str(desired_digit) + " with " + str(len(images)) + " images. "
+    print ("Training perceptron for digit " + str(desired_digit) + " with " + str(len(images)) + " images. ")
     #
     # TODO:
     # Train the perceptron (array of weights) given a set of training images, a set of labels (corresponding digits)
@@ -61,18 +61,19 @@ def train_perceptron(weights, images, labels, desired_digit):
 
 def load_dataset_digit(file_name):
     #It is assumed the file contains 1000 images with 28x28 grayscale pixels each one.
-    print "Loading data set from file " +  file_name
+    print ("Loading data set from file " +  file_name)
     f_data = [ord(c)/255.0 for c in open(file_name, "rb").read(784000)]
     images = []
     for i in range(1000):
         images.append(f_data[784*i:784*(i+1)])
-    print "Loaded " + str(len(images)) + " images."
+    print ("Loaded " + str(len(images)) + " images.")
     return images
 
 def load_dataset_all_digits(folder):
-    print "Loading data set from " + folder
-    if not folder.endswith("/"):
+    print ("Loading data set from " + folder)
+    if not folder.endswith("/") :
         folder += "/"
+
     training_dataset = []
     training_labels  = []
     testing_dataset  = []
@@ -86,7 +87,7 @@ def load_dataset_all_digits(folder):
     return training_dataset, training_labels, testing_dataset, testing_labels
 
 def main():
-    print "PRACTICE 09 - " + NAME
+    print ("PRACTICE 09 - " + NAME)
     rospy.init_node("practice09")
     rospack = rospkg.RosPack()
     dataset_folder = rospack.get_path("bring_up") + "/handwriting_digits/"
@@ -108,7 +109,7 @@ def main():
         if test_digit >= 0 and test_digit <= 9:
             img = testing_dataset[test_digit*500 + numpy.random.randint(0, 499)]
             y = evaluate(perceptron, img + [-1])
-            print "Perceptron output: " + str(y)
+            print ("Perceptron output: " + str(y))
             if y > 0.5:
                 print("Image corresponds to trained digit.")
             else:

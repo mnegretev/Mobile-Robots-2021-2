@@ -18,7 +18,7 @@ from geometry_msgs.msg import Point
 from visualization_msgs.msg import Marker
 from sensor_msgs.msg import LaserScan
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "Gerardo_Pastor"
 listener    = None
 pub_cmd_vel = None
 pub_markers = None
@@ -68,7 +68,7 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
 def callback_pot_fields_goal(msg):
     goal_x = msg.pose.position.x
     goal_y = msg.pose.position.y
-    print "Moving to goal point " + str([goal_x, goal_y]) + " by potential fields"    
+    print ("Moving to goal point " + str([goal_x, goal_y]) + " by potential fields")  
     loop = rospy.Rate(20)
     global laser_readings
 
@@ -143,7 +143,7 @@ def get_force_marker(robot_x, robot_y, force_x, force_y, color, id):
 
 def main():
     global listener, pub_cmd_vel, pub_markers
-    print "PRACTICE 05 - " + NAME
+    print ("PRACTICE 05 - " + NAME)
     rospy.init_node("practice05")
     rospy.Subscriber("/scan", LaserScan, callback_scan)
     rospy.Subscriber('/move_base_simple/goal', PoseStamped, callback_pot_fields_goal)
