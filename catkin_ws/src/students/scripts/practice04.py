@@ -102,7 +102,15 @@ def follow_path(path):
                 idx = len(path) - 1
             [local_x, local_y] = path[idx]
         global_error = math.sqrt((global_x - robot_x)**2 + (global_y - robot_y)**2)
+    
+    # cmd_vel = Twist() 
+    # cmd_vel.linear.x = 0
+    #cmd_vel.angular.z = 0
+    #pub_cmd_vel.publish(cmd_vel)
+
     pub_cmd_vel.publish(Twist())
+    pub_cmd_vel.publish(Twist())
+    
     return
     
 def callback_global_goal(msg):
