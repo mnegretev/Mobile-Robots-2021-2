@@ -37,7 +37,7 @@ def calculate_control(robot_x, robot_y, robot_a, goal_x, goal_y):
     if error_a>math.pi:
         error_a=error_a-2*math.pi
     
-    elif error_a<-math.pi:
+    elif error_a<=-math.pi:
         error_a=error_a+2*math.pi
 
 
