@@ -19,7 +19,7 @@ from nav_msgs.srv import GetPlanRequest
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import PoseStamped
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "ALVARADO_RAMOS"
 
 pub_cmd_vel = None
 loop        = None
@@ -42,7 +42,19 @@ def calculate_control(robot_x, robot_y, robot_a, goal_x, goal_y):
     # and return it (check online documentation for the Twist message).
     # Remember to keep error angle in the interval (-pi,pi]
     #
-    
+    v_max=0.8#velocidad lineal maxima
+    w_max=2#velocidad angular maxima
+    alpha=2#parametro alfa
+    beta=0.5#parametro beta
+    error_a=math.atan2(goal_y-robot_y, goal_x-robot_x)-robot_a
+    if(error_a>math.pi):
+    	error_a=error_a-2*math.pi
+    if(error_a<-math.pi):
+    	error_a=error_a+2*math.pi
+    v=v_max*math.exp(-error_a*error_a/alpha)#formula de velocidad lineal
+    w = w_max*(2/(1 + math.exp(-error_a/beta)) - 1)#formula de velocidad angular
+    cmd_vel.linear.x=v#escribimos velocidad lineal
+    cmd_vel.angular.z=w#escribimos velocidad angular
     return cmd_vel
 
 def follow_path(path):
@@ -69,6 +81,24 @@ def follow_path(path):
     #     Calculate global error
     # Send zero speeds (otherwise, robot will keep moving after reaching last point)
     #
+    idx=0 #indice igual a cero al empezar
+    [localx,localy]=path[idx]#asignamos el primer punto como nuestras coordenadas locales
+    [globalx, globaly]=path[-1]#asignamos la meta
+    [robotx, roboty, robotang]=get_robot_pose(listener)#obtenemos las coordenadas del robot
+    global_error=math.sqrt((globalx-robotx)**2+(globaly-roboty)**2)#calculamos el error global
+    local_error=math.sqrt((localx-robotx)**2+(localy-roboty)**2)#calculamos el error del punto local al robot
+    while global_error>0.1 and not rospy.is_shutdown():
+    	pub_cmd_vel.publish(calculate_control(robotx, roboty, robotang,localx, localy))#publicamos velocidades calculadas
+    	loop.sleep()#esperamos a que termine el ciclo
+    	[robotx, roboty, robotang]=get_robot_pose(listener)#calculamos la nueva posicion
+    	local_error=math.sqrt((localx-robotx)**2+(localy-roboty)**2)#calculamos error al siguiente punto
+    	if(local_error<0.3):#si nuestro error local es menor a la tolerancia
+    		idx+=1#aumentamos indice
+    		if idx >=len(path):#si el indice es igual al ultimo punto
+    			idx=len(path)-1#regresamos el indice al ultimo punto
+    		[localx,localy]=path[idx]#nuevos punto local
+    	global_error=math.sqrt((globalx-robotx)**2+(globaly-roboty)**2)#calculamos el error global
+    pub_cmd_vel.publish(Twist())
     return
     
 def callback_global_goal(msg):
