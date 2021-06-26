@@ -1,0 +1,10 @@
+La práctica 1 corre y calcula las rutas, sin embargo, no corresponden con las esperadas.
+El problema está en el cálculo de la heurística. En la línea 107 se tiene:
+
+h = numpy.abs(nr-goal_r)-numpy.abs(nc-goal_c)
+
+y la heurística debe ser:
+
+h = numpy.abs(nr-goal_r)+numpy.abs(nc-goal_c)
+
+Calificación: 9
