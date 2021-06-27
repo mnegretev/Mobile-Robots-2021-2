@@ -1,0 +1,11 @@
+La práctica 2 no funciona correctamente.
+El mapa de costo no se calcula correctamente, lo que puede deberse a un error
+en la línea 88, que dice:
+
+for k2 in range(cost_radius, cost_radius+1):
+
+y debería decir:
+
+for k2 in range(-cost_radius, cost_radius+1):
+
+Calificación: 6
