@@ -1,0 +1,10 @@
+La práctica 3 funciona parcialmente.
+El programa calcula las rutas sin embargo no son las esperadas.
+El problema está en el cálculo de la heurística, la línea dice:
+
+h = abs(nr-goal_r) - abs(nc-goal_c)
+
+debería decir:
+h = abs(nr-goal_r) + abs(nc-goal_c)
+
+Calificación: 9
