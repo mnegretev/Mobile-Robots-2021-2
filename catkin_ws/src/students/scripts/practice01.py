@@ -96,7 +96,7 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
             if grid_map[nr,nc] != 0 or in_closed_list[nr,nc]:
                 continue
             g = g_values[r,c] + 1 + cost_map[nr][nc]
-            h = abs(nr-goal_r) - abs(nc-goal_c)
+            h = abs(nr-goal_r) + abs(nc-goal_c)
             f = g + h
             if g < g_values[nr,nc]:
                 g_values[nr, nc] = g
