@@ -59,6 +59,7 @@ def attraction_force(robot_x, robot_y, goal_x, goal_y):
     # where force_x and force_y are the X and Y components
     # of the resulting attraction force w.r.t. map.
     #
+
     return [force_x, force_y]
 
 def rejection_force(robot_x, robot_y, robot_a, laser_readings):
@@ -72,15 +73,16 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
     # where force_x and force_y are the X and Y components
     # of the resulting rejection force w.r.t. map.
     #
+
     return [force_x, force_y]
 
 def callback_pot_fields_goal(msg):
     goal_x = msg.pose.position.x
     goal_y = msg.pose.position.y
-    print "Moving to goal point " + str([goal_x, goal_y]) + " by potential fields"    
+    print ("Moving to goal point " + str([goal_x, goal_y]) + " by potential fields")
     loop = rospy.Rate(20)
     global laser_readings
-
+    
     #
     # Move the robot towards goal point using potential fields.
     # Remember goal point is a local minimun in the potential field, thus,
@@ -106,7 +108,23 @@ def callback_pot_fields_goal(msg):
     #     Update robot position by calling robot_x, robot_y, robot_a = get_robot_pose(listener)
     #     Recalculate distance to goal position
     #  Publish a zero speed (to stop robot after reaching goal point)
-    
+    epsilon=0.5
+    tolerance=0.1
+    robot_x, robot_y, robot_a = get_robot_pose(listener)
+    dist_to_goal=math.sqrt((goal_x - robot_x)**2 + (goal_y - robot_y)**2)
+    while dist_to_goal>tolerance or rospy.is_shutdown():
+        [fax, fay] = attraction_force(robot_x, robot_y, goal_x, goal_y)#Calculamos la fuerza de atraccion
+        [frx, fry] = rejection_force (robot_x, robot_y, robot_a, laser_readings)#Calculamos la fuerza de repulsion
+        [fx,fy]=[fax+frx,fay+fry]#Obtenemos la fuerza resultante
+        [px,py]=[robot_x-epsilon*fx,robot_y-epsilon*fy]#Obtenemos los puntos objetivo locales con la fuerza neta restada multiplicada por epsilon
+        msg_cmd_vel=calculate_control(robot_x,robot_y,robot_a,px,py)
+        pub_cmd_vel.publish(msg_cmd_vel)
+        draw_force_markers(robot_x, robot_y, afx, afy, rfx, rfy, fx, fy, pub_markers)#Para dibujar las fuerzas
+        loop.sleep()
+        robot_x, robot_y, robot_a = get_robot_pose(listener)
+        dist_to_goal=math.sqrt((goal_x - robot_x)**2 + (goal_y - robot_y)**2)
+
+
     print("Goal point reached")
 
 def get_robot_pose(listener):
