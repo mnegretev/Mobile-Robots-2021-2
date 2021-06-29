@@ -1,0 +1,12 @@
+La práctica 3 no funciona correctamente.
+El suavizado no se realiza correctamente, lo que puede deberse a un
+error en la línea 168. La línea dice:
+
+gy=alpha*(2*yo -yp -yn) + beta*(yi-yo)
+
+debería decir:
+
+gy=alpha*(2*yi -yp -yn) + beta*(yi-yo)
+
+Calificación: 6
+
