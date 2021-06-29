@@ -19,57 +19,100 @@ from nav_msgs.srv import GetPlanRequest
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import PoseStamped
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "MONTERRUBIO_LOPEZ"
 
 pub_cmd_vel = None
 loop        = None
 listener    = None
 
 def calculate_control(robot_x, robot_y, robot_a, goal_x, goal_y):
-    cmd_vel = Twist()
-    
-    #
-    # TODO:
-    # Implement the control law given by:
-    #
-    # v = v_max*math.exp(-error_a*error_a/alpha)
-    # w = w_max*(2/(1 + math.exp(-error_a/beta)) - 1)
-    #
-    # where error_a is the angle error and
-    # v and w are the linear and angular speeds taken as input signals
-    # and v_max, w_max, alpha and beta, are tunning constants.
-    # Store the resulting v and w in the Twist message cmd_vel
-    # and return it (check online documentation for the Twist message).
-    # Remember to keep error angle in the interval (-pi,pi]
-    #
-    
-    return cmd_vel
+	cmd_vel = Twist()
+
+	#
+	# TODO:
+	# Implement the control law given by:
+	#
+	# v = v_max*math.exp(-error_a*error_a/alpha)
+	# w = w_max*(2/(1 + math.exp(-error_a/beta)) - 1)
+	#
+	# where error_a is the angle error and
+	# v and w are the linear and angular speeds taken as input signals
+	# and v_max, w_max, alpha and beta, are tunning constants.
+	# Store the resulting v and w in the Twist message cmd_vel
+	# and return it (check online documentation for the Twist message).
+	# Remember to keep error angle in the interval (-pi,pi]
+	#
+
+	#Tuning constants
+	alpha = 0.1
+	beta = 1
+	#Constants according to motor characteristics
+	v_max = 0.7
+	w_max = 0.5
+	#Calculating the angle error
+	error_a = math.atan2(goal_y-robot_y,goal_x-robot_x) - robot_a
+	#To keep the error between -Pi and Pi
+	if(error_a > math.pi):
+		error_a = error_a - 2 * math.pi
+	if(error_a < - math.pi):
+		error_a = error_a + 2 * math.pi
+	#Control laws
+	v = v_max*math.exp(-error_a*error_a/alpha)
+	w = w_max*(2/(1 + math.exp(-error_a/beta)) - 1)
+	#Assign the value of linear and angular velocity
+	cmd_vel.linear.x = v
+	cmd_vel.angular.z = w
+
+	return cmd_vel
 
 def follow_path(path):
-    #
-    # TODO:
-    # Use the calculate_control function to move the robot along the path.
-    # Path is given as a sequence of points [[x0,y0], [x1,y1], ..., [xn,yn]]
-    # The publisher for the twist message is already declared as 'pub_cmd_vel'
-    # You can use the following steps to perform the path tracking:
-    #
-    # Set local goal point as the first point of the path
-    # Set global goal point as the last point of the path
-    # Get robot position with [robot_x, robot_y, robot_a] = get_robot_pose(listener)
-    # Calculate global error as the magnitude of the vector from robot pose to global goal point
-    # Calculate local  error as the magnitude of the vector from robot pose to local  goal point
-    #
-    # WHILE global error > tolerance  and not rospy.is_shutdown() #This keeps the program aware of signals such as Ctrl+C
-    #     Calculate control signals v and w and publish the corresponding message
-    #     loop.sleep()  #This is important to avoid an overconsumption of processing time
-    #     Get robot position
-    #     Calculate local error
-    #     If local error is less than 0.3 (you can change this constant)
-    #         Change local goal point to the next point in the path
-    #     Calculate global error
-    # Send zero speeds (otherwise, robot will keep moving after reaching last point)
-    #
-    return
+	#
+	# TODO:
+	# Use the calculate_control function to move the robot along the path.
+	# Path is given as a sequence of points [[x0,y0], [x1,y1], ..., [xn,yn]]
+	# The publisher for the twist message is already declared as 'pub_cmd_vel'
+	# You can use the following steps to perform the path tracking:
+	#
+	# Set local goal point as the first point of the path
+	# Set global goal point as the last point of the path
+	# Get robot position with [robot_x, robot_y, robot_a] = get_robot_pose(listener)
+	# Calculate global error as the magnitude of the vector from robot pose to global goal point
+	# Calculate local  error as the magnitude of the vector from robot pose to local  goal point
+	#
+	# WHILE global error > tolerance  and not rospy.is_shutdown() #This keeps the program aware of signals such as Ctrl+C
+	#     Calculate control signals v and w and publish the corresponding message
+	#     loop.sleep()  #This is important to avoid an overconsumption of processing time
+	#     Get robot position
+	#     Calculate local error
+	#     If local error is less than 0.3 (you can change this constant)
+	#         Change local goal point to the next point in the path
+	#     Calculate global error
+	# Send zero speeds (otherwise, robot will keep moving after reaching last point)
+	#
+
+	idx=0 #First index
+	[localx,localy]=path[idx] #Local coordinates
+	[globalx, globaly]=path[-1] #Goal assignment
+	[robotx, roboty, robotang]=get_robot_pose(listener) #Robot coordinates
+	global_error=math.sqrt((globalx-robotx)**2+(globaly-roboty)**2) #Global error
+	local_error=math.sqrt((localx-robotx)**2+(localy-roboty)**2) #Local point error
+	while global_error>0.1 and not rospy.is_shutdown():
+		#We calculate the control laws
+		pub_cmd_vel.publish(calculate_control(robotx, roboty, robotang,localx, localy))
+		loop.sleep()
+		[robotx, roboty, robotang]=get_robot_pose(listener) #The position of the robot is obtained
+		local_error=math.sqrt((localx-robotx)**2+(localy-roboty)**2)
+		if(local_error<0.3):
+			idx+=1
+			#if the index is equal to the last point
+			if idx >=len(path):
+				idx=len(path)-1
+			#Moves to the next point
+			[localx,localy]=path[idx]
+		global_error=math.sqrt((globalx-robotx)**2+(globaly-roboty)**2) #Global error
+	pub_cmd_vel.publish(Twist())	
+
+	return
     
 def callback_global_goal(msg):
     print "Calculatin path from robot pose to " + str([msg.pose.position.x, msg.pose.position.y])
