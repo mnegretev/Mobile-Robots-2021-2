@@ -88,6 +88,7 @@ def follow_path(path):
     #     Calculate global error
     # Send zero speeds (otherwise, robot will keep moving after reaching last point)
     #
+    idx=0
     [local_x,local_y] = path[0]
     [global_x, global_y]= path [-1]
     [robot_x, robot_y, robot_a]= get_robot_pose(listener)
@@ -102,7 +103,7 @@ def follow_path(path):
         idx = min(idx+1, len(path)-1) if local_error < 0.3 else idx
         [local_x, local_y] = path[idx]
         global_error = math.sqrt((global_x - robot_x)**2+ (global_y- robot_y)**2)
-    pub_cmd_vel.publish(twist())
+    pub_cmd_vel.publish(Twist())
     
     return
     
