@@ -19,7 +19,7 @@ from nav_msgs.srv import GetPlanRequest
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import PoseStamped
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "COLOHUA_CARVAJAL"
 
 pub_cmd_vel = None
 loop        = None
@@ -42,7 +42,22 @@ def calculate_control(robot_x, robot_y, robot_a, goal_x, goal_y):
     # and return it (check online documentation for the Twist message).
     # Remember to keep error angle in the interval (-pi,pi]
     #
+    alpha = 0.1    
+    beta = 0.1     
+    v_max = 0.5  
+    w_max = 1    
+
+    error_a = math.atan2(goal_y -robot_y, goal_x - robot_x) - robot_a
+    if error_a > math.pi:
+        error_a = error_a - 2*math.pi
+    elif error_a < -math.pi:
+        error_a = error_a + 2*math.pi
     
+    v = v_max*math.exp(-error_a*error_a/alpha)    
+    w = w_max*(2/(1 + math.exp(-error_a/beta)) - 1)
+
+    cmd_vel.linear.x = v
+    cmd_vel.angular.z = w
     return cmd_vel
 
 def follow_path(path):
@@ -69,6 +84,23 @@ def follow_path(path):
     #     Calculate global error
     # Send zero speeds (otherwise, robot will keep moving after reaching last point)
     #
+
+    idx = 0
+    [local_x, local_y] = path[idx]
+    [global_x, global_y] = path[-1]
+    [robot_x, robot_y, robot_a] = get_robot_pose(listener)
+    global_error = math.sqrt((global_x - robot_x)**2 + (global_y - robot_y)**2)
+    local_error = math.sqrt((local_x - robot_x)**2 + (local_y - robot_y)**2)
+
+    while global_error > 0.1 and not rospy.is_shutdown():
+        pub_cmd_vel.publish(calculate_control(robot_x,robot_y,robot_a,local_x, local_y))
+        loop.sleep()
+        [robot_x,robot_y, robot_a] = get_robot_pose(listener)
+        local_error = math.sqrt((local_x - robot_x)**2 + (local_y -robot_y)**2)
+        idx = min(idx+1, len(path) -1) if local_error < 0.3 else idx
+        [local_x, local_y] = path[idx]
+        global_error = math.sqrt((global_x - robot_x)**2 + (global_y -robot_y)**2)
+    pub_cmd_vel.publish(Twist())
     return
     
 def callback_global_goal(msg):

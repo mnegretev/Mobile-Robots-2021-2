@@ -99,6 +99,7 @@ def callback_pot_fields_goal(msg):
     #     Recalculate distance to goal position
     #  Publish a zero speed (to stop robot after reaching goal point)
     
+    
     print("Goal point reached")
 
 def get_robot_pose(listener):
