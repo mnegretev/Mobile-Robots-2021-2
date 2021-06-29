@@ -56,7 +56,6 @@ def calculate_control(robot_x, robot_y, robot_a, goal_x, goal_y):
     
     cmd_vel.linear.x = v_max*math.exp(-error_a*error_a/alpha)
     cmd_vel.angular.z = w_max*(2/(1 + math.exp(-error_a/beta)) - 1)
-
     return cmd_vel
 
 def follow_path(path):
