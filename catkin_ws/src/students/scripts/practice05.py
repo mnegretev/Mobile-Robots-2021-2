@@ -17,6 +17,7 @@ from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Point
 from visualization_msgs.msg import Marker
 from sensor_msgs.msg import LaserScan
+import numpy as np
 
 NAME = "ROJAS MOSQUEDA AXEL JAVIER"
 listener    = None
@@ -35,7 +36,7 @@ def calculate_control(robot_x, robot_y, robot_a, goal_x, goal_y):
         error_a=error_a+2*math.pi
 
 
-    v = 0.5*math.exp(-error_a*error_a/alpha)
+    v = 0.2*math.exp(-error_a*error_a/alpha)
     w = 0.5*(2/(1 + math.exp(-error_a/beta)) - 1)
     #
     # where error_a is the angle error and
@@ -59,8 +60,9 @@ def attraction_force(robot_x, robot_y, goal_x, goal_y):
     # where force_x and force_y are the X and Y components
     # of the resulting attraction force w.r.t. map.
     #
-    alfa=0.5
-    force_x, force_y=(alfa/math.sqrt(((robot_x-goal_x)**2)+((robot_y-goal_y)**2)))*(robot_x-goal_x),(alfa/math.sqrt(((robot_x-goal_x)**2)+((robot_y-goal_y)**2)))*(robot_y-robot_y)
+    intensidad_atraccion=2
+    force_x=(intensidad_atraccion/math.sqrt((robot_x-goal_x)**2+(robot_y-goal_y)**2))*(robot_x-goal_x)
+    force_y=(intensidad_atraccion/math.sqrt((robot_x-goal_x)**2+(robot_y-goal_y)**2))*(robot_y-goal_y)
 
     return [force_x, force_y]
 
@@ -77,24 +79,28 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
     #
     force_x=0
     force_y=0
-    d0=21#Son 21 corresponde a 1.5 m de distancia
-    beta=1
+    d0=0.8#A partir de 0.8 metros del robot no voy a contar la reulsion
+    intensidad_repulsion=3
+    i=0
     
     for lectura_ls in laser_readings:
         d=lectura_ls[0]#Corresponde a la distancia d, desde el robot hasta el obstaculo
-        print(d)
-        """
-        if d>d0:
+        
+        
+        if d>0 and d<d0 and np.isfinite(d) and not np.isnan(d):
+            i+=1  
             theta_obs=robot_a+lectura_ls[1]#Obtengo el angulo del obstaculo con respecto al sistema de referencia general, ya que al angulo del robot le sumo el angulo del obstaculo con respecto al robot
-            punto_obs_x,punto_obs_y=d*math.cos(theta_obs),d*math.sin(theta_obs)
-            force_x+=((beta*math.sqrt((1/d)-(1/d0)))/math.sqrt(((robot_x-punto_obs_x)**2)+((robot_y-punto_obs_y)**2)))*(punto_obs_x-robot_x)
-            force_y+=((beta*math.sqrt((1/d)-(1/d0)))/math.sqrt(((robot_x-punto_obs_x)**2)+((robot_y-punto_obs_y)**2)))*(punto_obs_y-robot_y)
+            punto_obs_x=robot_x+d*math.cos(theta_obs)
+            punto_obs_y=robot_y+d*math.sin(theta_obs)
+            force_x+=((intensidad_repulsion*math.sqrt((1/d)-(1/d0)))/d)*(punto_obs_x-robot_x)
+            force_y+=((intensidad_repulsion*math.sqrt((1/d)-(1/d0)))/d)*(punto_obs_y-robot_y)
         else:
             pass
 
-    force_x=force_x/len(laser_readings)
-    force_y=force_y/len(laser_readings)
-    """
+    if i!=0:
+        force_x=force_x/i
+        force_y=force_y/i
+    
     return [force_x, force_y]
 
 def callback_pot_fields_goal(msg):
@@ -140,12 +146,12 @@ def callback_pot_fields_goal(msg):
         [px,py]=[robot_x-epsilon*fx,robot_y-epsilon*fy]#Obtenemos los puntos objetivo locales con la fuerza neta restada multiplicada por epsilon
         msg_cmd_vel=calculate_control(robot_x,robot_y,robot_a,px,py)
         pub_cmd_vel.publish(msg_cmd_vel)
-        draw_force_markers(robot_x, robot_y, afx, afy, rfx, rfy, fx, fy, pub_markers)#Para dibujar las fuerzas
+        draw_force_markers(robot_x, robot_y, fax, fay, frx, fry, fx, fy, pub_markers)#Para dibujar las fuerzas
         loop.sleep()
         robot_x, robot_y, robot_a = get_robot_pose(listener)
         dist_to_goal=math.sqrt((goal_x - robot_x)**2 + (goal_y - robot_y)**2)
 
-
+    pub_cmd_vel.publish(Twist())
     print("Goal point reached")
 
 def get_robot_pose(listener):
@@ -199,6 +205,7 @@ def main():
     listener = tf.TransformListener()
     #listener.waitForTransform("map", "base_link", rospy.Time(0), rospy.Duration(5.0))
     rospy.spin()
+    pub_cmd_vel.publish(Twist())
 
 if __name__ == '__main__':
     try:
