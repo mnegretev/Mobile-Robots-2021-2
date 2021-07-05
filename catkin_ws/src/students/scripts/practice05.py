@@ -45,7 +45,7 @@ def calculate_control(robot_x, robot_y, robot_a, goal_x, goal_y):
     # and return it (check online documentation for the Twist message).
     # Remember to keep error angle in the interval (-pi,pi]
     #
-    
+    cmd_vel=Twist()
 
     cmd_vel.linear.x=v
     cmd_vel.angular.z=w
@@ -59,6 +59,8 @@ def attraction_force(robot_x, robot_y, goal_x, goal_y):
     # where force_x and force_y are the X and Y components
     # of the resulting attraction force w.r.t. map.
     #
+    alfa=0.5
+    force_x, force_y=(alfa/math.sqrt(((robot_x-goal_x)**2)+((robot_y-goal_y)**2)))*(robot_x-goal_x),(alfa/math.sqrt(((robot_x-goal_x)**2)+((robot_y-goal_y)**2)))*(robot_y-robot_y)
 
     return [force_x, force_y]
 
@@ -73,7 +75,26 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
     # where force_x and force_y are the X and Y components
     # of the resulting rejection force w.r.t. map.
     #
+    force_x=0
+    force_y=0
+    d0=21#Son 21 corresponde a 1.5 m de distancia
+    beta=1
+    
+    for lectura_ls in laser_readings:
+        d=lectura_ls[0]#Corresponde a la distancia d, desde el robot hasta el obstaculo
+        print(d)
+        """
+        if d>d0:
+            theta_obs=robot_a+lectura_ls[1]#Obtengo el angulo del obstaculo con respecto al sistema de referencia general, ya que al angulo del robot le sumo el angulo del obstaculo con respecto al robot
+            punto_obs_x,punto_obs_y=d*math.cos(theta_obs),d*math.sin(theta_obs)
+            force_x+=((beta*math.sqrt((1/d)-(1/d0)))/math.sqrt(((robot_x-punto_obs_x)**2)+((robot_y-punto_obs_y)**2)))*(punto_obs_x-robot_x)
+            force_y+=((beta*math.sqrt((1/d)-(1/d0)))/math.sqrt(((robot_x-punto_obs_x)**2)+((robot_y-punto_obs_y)**2)))*(punto_obs_y-robot_y)
+        else:
+            pass
 
+    force_x=force_x/len(laser_readings)
+    force_y=force_y/len(laser_readings)
+    """
     return [force_x, force_y]
 
 def callback_pot_fields_goal(msg):
