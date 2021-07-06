@@ -1,0 +1,7 @@
+La práctica 4 funciona parcialmente.
+El programa realiza el seguimiento pero el robot se queda dando varias vueltas al
+final del recorrido. Después de algunas vueltas el robot se detiene. Esto se debe a una
+mala sintonización de las constantes. Se sugiere disminuir las velocidades lineal y angular
+máximas. Para las velocidades actuales, es necesario probar con valores diferentes de alpha
+y beta. 
+Calificación: 8
