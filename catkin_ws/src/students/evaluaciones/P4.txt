@@ -1,0 +1,5 @@
+La práctica 4 funciona correctamente.
+Calificación: 10
+Aunque la práctica funciona correctamente, se recomienda resintonizar las
+constantes del control, puesto que el robot tiene cambios de velocidad abruptos
+sobre todo cuando va a dar vuelta. 
