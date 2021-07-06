@@ -1,0 +1,9 @@
+La práctica 4 no funciona correctamente.
+Hay un error de sintaxis en la línea 58:
+Dice:
+cmd_vel.linear_x=v
+y debería decir:
+cmd_vel.linear.x=v
+
+Calificación: 5
+
