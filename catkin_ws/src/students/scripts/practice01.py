@@ -138,7 +138,7 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
                 continue
             g = g_values[r,c] + 1 + cost_map[nr][nc]
             #distancia Manhattan
-            h = numpy.abs(nr-goal_r)-numpy.abs(nc-goal_c)
+            h = numpy.abs(nr-goal_r)+numpy.abs(nc-goal_c)
             #calculo de f
             f = g + h
             if g < g_values[nr, nc]:
