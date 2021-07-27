@@ -49,7 +49,7 @@ def get_inflated_map(static_map, inflation_cells):
     # Map is given in 'static_map' as a bidimensional numpy array.
     # Consider as occupied cells all cells with an occupation value greater than 50
     #
-     for i in range(height):
+    for i in range(height):
         for j in range(width):
             if static_map[i,j] > 0:
                 for k1 in range(i-inflation_cells, i+inflation_cells+1):

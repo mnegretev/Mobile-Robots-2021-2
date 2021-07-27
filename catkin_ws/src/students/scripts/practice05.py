@@ -82,13 +82,13 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
     force_x =0
     force_y =0
     d0 = 1.0
-    for [distance, angle] in laser_readings:
-        if distance < d0 and distance > 0:
-            mag = beta* math.sqrt(1/ distance- 1/do)
+    for [dist, angle] in laser_readings:
+        if dist < d0 and dist > 0:
+            magn = beta* math.sqrt(1/ dist- 1/d0)
         else:
-            mag = 0
-        force_x += mag* math.cos(angle+ robot_a)
-        force_y += mag*math.sin(angle + robot_a)
+            magn = 0
+        force_x += magn* math.cos( angle + robot_a)
+        force_y += magn* math.sin( angle + robot_a)
     if len(laser_readings)==0:
         return [force_x, force_y]
     [force_x, force_y]= [force_x/ len(laser_readings), force_y/ len(laser_readings)]
