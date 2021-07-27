@@ -94,9 +94,7 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
 
     for laser in laser_readings:
         if laser[0] < d0 :
-            print(laser[0])
             theta = laser[1] + robot_a
-            print (theta)
             force_x = beta*math.sqrt((1/laser[0])-(1/d0))* math.cos(theta)
             force_y = beta*math.sqrt((1/laser[0])-(1/d0))* math.sin(theta)
         else:
