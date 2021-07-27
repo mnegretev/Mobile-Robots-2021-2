@@ -150,7 +150,7 @@ def get_smooth_path(original_path, alpha, beta):
     while gradient_mag > tolerance:  #mientras la magnitu del gradiente sea mayor a la tolerancia 
         gradient_mag = 0
         [xi,yi] = smooth_path[0]  #El nodo actual
-        [xn.yn] = smooth_path[1]  #El nodo siguiente
+        [xn,yn] = smooth_path[1]  #El nodo siguiente
         [xo,yo] = original_path[0]
         gx = alpha*(xi - xn) + beta*(xi-xo) #gradiente de la posicion 0 o la primera posicion en x 
         gy = alpha*(yi - yn) + beta*(yi-yo) #gradiente de la posicion 0 o la primera posicion en y  
@@ -160,7 +160,7 @@ def get_smooth_path(original_path, alpha, beta):
         for i  in range(1,len(smooth_path)-1 ):  #Para cada i  en el conjunto de indices, inicia desde el indice 1 o posicion 1 o segunda posicion hasta el penultim
             [xi,yi] = smooth_path[i]   #para el i-esimo termino
             [xp,yp] = smooth_path[i-1] #para el punto anterior de la ruta 
-            [xn.yn] = smooth_path[i+1] #para el punto siguiente en la ruta
+            [xn,yn] = smooth_path[i+1] #para el punto siguiente en la ruta
             [xo,yo] = original_path[i]    #Esta es la ruta original con el i-esimo punto 
             gx = alpha*(2*xi - xp - xn) + beta*(xi-xo)  #Calculo del gradiente para el punto x
             gy = alpha*(2*yi - yp - yn) + beta*(yi-yo)  #Calculo del gradiente para el punto y 
@@ -169,7 +169,7 @@ def get_smooth_path(original_path, alpha, beta):
             gradient_mag += gx**2 + gy**2
         #Esto es para el ultimo punto, por lo cual quiero el  actual que es 99-1 o sea el -1 y el  previo
         [xi,yi] = smooth_path[-1]  #El nodo actual
-        [xp.yp] = smooth_path[-2]  #El nodo previo
+        [xp,yp] = smooth_path[-2]  #El nodo previo
         [xo,yo] = original_path[-1]
         gx = alpha*(xn - xp) + beta*(xi-xo) #gradiente de la posicion 0 o la primera posicion en x 
         gy = alpha*(yn - yp) + beta*(yi-yo) #gradiente de la posicion 0 o la primera posicion en y  
