@@ -47,12 +47,12 @@ geometry_msgs::PoseArray get_initial_distribution(int N, float min_x, float max_
      * For the Euler angles (roll, pitch, yaw) = (0,0,theta) the corresponding quaternion is
      * given by (0,0,sin(theta/2), cos(theta/2)). 
      */
-    for(size_t i=0; < N; i++)
+    for(size_t i=0;i < N; i++)
     {
         particles.poses[i].position.x = rnd.uniformReal(min_x, max_x);
         particles.poses[i].position.y = rnd.uniformReal(min_y, max_y);
         float theta = rnd.uniformReal(min_a,max_a);
-        particles.poses[i].orientation.w
+        //particles.poses[i].orientation.w
     }
     return particles;
 }
