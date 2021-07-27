@@ -66,6 +66,11 @@ std::vector<sensor_msgs::LaserScan> simulate_particle_scans(geometry_msgs::PoseA
      * Use the variable 'real_sensor_info' (already declared as global variable) for the real sensor information
      */
 
+    for (size_t i=0;i < particles.poses.size();i++)
+    {
+        simulated_scans[i]= *occupancy_grid_utils::simulateRangeScan(map,particles.poses[i],real_sensor_info)
+    } 
+
     return simulated_scans;
 }
 
@@ -85,7 +90,37 @@ std::vector<float> calculate_particle_weights(std::vector<sensor_msgs::LaserScan
      * in the real sensor.
      * IMPORTANT NOTE 2. Both, simulated an real scans, can have infinite ranges. Thus, when comparing readings,
      * ensure both simulated and real ranges are finite values. 
-     */    
+     */
+    double weights_sum=0;
+    for (size_t i=0;i<simulated_scans.size();i++)
+    {
+        weights[i]=0;
+        for (size_t j=0;j<simulated_scans.ranges.size();j++)
+        {
+            if (real_scan.ranges[j*LASER_DOWNSAMPLING]<real_scan.range_max && simulated_scans[i].range[j]<real_scan.range_max)
+            {
+                weights[i]+=fabs(simulated_scans[i].range[j]-real_scan.ranges[j*LASER_DOWNSAMPLING]);
+            
+            }
+            else
+            {
+                weights[i]+=real_scan.range_max;
+
+            }
+            weights[i]/=simulated_scans[i].ranges.size()
+            weights[i]=exp(-weights[i]*weights[i]/SENSOR_NOISE);
+            weights_sum+=weights[i];
+
+        }
+        
+    }
+    
+    for(size_t i=0;i<weights.size();i++)
+        {
+            weights[i]/=weights_sum;
+        }
+
+    
     return weights;
 }
 
