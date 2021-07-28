@@ -19,7 +19,7 @@ from nav_msgs.srv import GetPlanRequest
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import PoseStamped
 
-NAME = "Guzman_Santiago"
+NAME = "GUZMAN_SANTIAGO"
 
 
 pub_cmd_vel = None
