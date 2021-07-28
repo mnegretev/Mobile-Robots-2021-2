@@ -90,7 +90,7 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
     d0 = 1.0
     for [distance, angle] in laser_readings:
         if distance < d0 and distance > 0:
-            mag = beta* math.sqrt(1/ distance- 1/do)
+            mag = beta* math.sqrt(1/ distance- 1/d0)
         else:
             mag = 0
         force_x += mag* math.cos(angle+ robot_a)
