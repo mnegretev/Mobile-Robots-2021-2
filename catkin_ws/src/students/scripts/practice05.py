@@ -97,31 +97,46 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
 
     #Variables de disenio.
     beta = 1
-    d0=0.5 #Distancia de influencia
+    d0=5 #Distancia de influencia
     #Contador
     c=0
     #Sumatorias
     sumX = 0
     sumY = 0
     #laser_readings es una tupla -> [0]->distance d y [1] angle
-    print(len(laser_readings))
-    print(laser_readings)
+    #test = float("inf")
+
     for i in range(len(laser_readings)):
-        #Comprobando que d > d0
+        #Comprobando que d > d0 -> Incorrecto
+        #Con base en la desigualdad anterior,
+        #    siempre tendremos un resultado negativo en la raiz.
+        #Por lo tanto, d0 debe se mayor que d (d0 > d) para que no haya
+        #   problemas con la raiz. 
         
-        if laser_readings[i][0] > d0:
-            c += 1
-            magnitud = beta * math.sqrt((1/laser_readings[i][0]) - (1/d0))
-            #Componentes X y Y afectadas por la suma del angulo del robot y el del laser
-            comX = math.cos(laser_readings[i][1]+robot_a) 
-            comY = math.sin(laser_readings[i][1]+robot_a)
+        if laser_readings[i][0] < d0:
+            
+            if math.isinf(laser_readings[i][0]):
+                print("inf") #No hagas nada
+            else:
+                #Tuve que dividir el codigo asi para encontrar el error
+                #c += 1
+                c = c + 1
+                primero = (1/laser_readings[i][0])
+                #print(primero)
+                segundo = (1/d0)
+                #print(segundo)
+                resta = primero - segundo
+                #print(resta)
+                magnitud = beta * math.sqrt(resta)
+                #Componentes X y Y afectadas por la suma del angulo del robot y el del laser
+                comX = math.cos(laser_readings[i][1]+robot_a) 
+                comY = math.sin(laser_readings[i][1]+robot_a)
 
-            sumX = sumX + magnitud*(comX/laser_readings[i][0])
-            sumY = sumY + magnitud*(comY/laser_readings[i][0])
-
-    print(sumX)
-    print(sumY)
-    print(c)
+                sumX = sumX + magnitud*(comX/laser_readings[i][0])
+                sumY = sumY + magnitud*(comY/laser_readings[i][0])
+    #print(sumX)
+    #print(sumY)
+    #print(c)
     force_x = sumX/c
     force_y = sumY/c
 
@@ -183,7 +198,7 @@ def callback_pot_fields_goal(msg):
         robot_x, robot_y, robot_a = get_robot_pose(listener)
         dist_to_goal = math.sqrt((goal_x - robot_x)**2 + (goal_y - robot_y)**2)
 
-    pub_cmd_vel.pusblish(Twist())
+    pub_cmd_vel.publish(Twist())
     print("Goal point reached")
 
     #Ejecutar este launch roslaunch bring_up obs_avoidance.launch
