@@ -70,11 +70,9 @@ def attraction_force(robot_x, robot_y, goal_x, goal_y):
     # of the resulting attraction force w.r.t. map.
     #
     alpha = 1 
-    mod_x = math.sqrt(robot_x**2 + goal_x**2)
-    force_x = alpha*(goal_x-robot_x)/ mod_x
-
-    mod_y = math.sqrt(robot_y**2 + goal_y**2)
-    force_y = alpha*(goal_y-robot_y)/ mod_y
+    mod = math.sqrt((goal_x-robot_x)**2 + (goal_y-robot_y)**2)
+    force_x = alpha*(robot_x-goal_x)/ mod
+    force_y = alpha*(robot_y-goal_y)/ mod
     return [force_x, force_y]
 
 def rejection_force(robot_x, robot_y, robot_a, laser_readings):
@@ -89,11 +87,14 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
     # where force_x and force_y are the X and Y components
     # of the resulting rejection force w.r.t. map.
     #
-    d0 = 0.5
-    beta = 1
+    d0 = 1
+    beta = 8
+    sum_force_x = 0
+    sum_force_y = 0
+    
 
     for laser in laser_readings:
-        if laser[0] < d0 :
+        if laser[0] <= d0 and laser[0] !=0 :
             theta = laser[1] + robot_a
             force_x = beta*math.sqrt((1/laser[0])-(1/d0))* math.cos(theta)
             force_y = beta*math.sqrt((1/laser[0])-(1/d0))* math.sin(theta)
@@ -101,12 +102,11 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
             force_x = 0
             force_y = 0
         
-        force_x += force_x
-        force_y += force_y
+        sum_force_x += force_x
+        sum_force_y += force_y
 
-    force_x = (1/len(laser))*force_x
-    force_y = (1/len(laser))*force_y
-
+    force_x = sum_force_x/int(len(laser_readings))
+    force_y = sum_force_y/int(len(laser_readings))
 
     return [force_x, force_y]
 
@@ -144,7 +144,7 @@ def callback_pot_fields_goal(msg):
     #     Recalculate distance to goal position
     #  Publish a zero speed (to stop robot after reaching goal point)
     epsilon = 0.5
-    tolerance = 0.1
+    tolerance = 0.2
     robot_x, robot_y,robot_a = get_robot_pose(listener)
     dist_to_goal = math.sqrt((goal_x-robot_x)**2 + (goal_y-robot_y)**2)
     while dist_to_goal > tolerance and not rospy.is_shutdown():
