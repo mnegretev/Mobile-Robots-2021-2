@@ -80,17 +80,18 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
     # of the resulting rejection force w.r.t. map.
     #
     beta = 1
-    d0 = 1
+    d0 = 0.9
+    j = 0
     [force_x, force_y] = [0,0]
     for i in range(len(laser_readings)):
         [distance, angle] = laser_readings[i]
-        if distance > d0:
+        if distance > d0:       
             magnitude = beta*math.sqrt(1/distance - 1/d0)
-            obs_x = robot_x*math.cos(angle + robot_a)
-            obs_y = robot_x*math.sin(angle + robot_a)
-            [force_x, force_y] = [magnitude*obs_x/distance, magnitude*obs_y/distance]
-        else:
-            [force_x, force_y] = [force_x/len(laser_readings), force_y/len(laser_readings)]
+            [obs_x, obs_y] = [robot_x*math.cos(angle + robot_a), robot_y*math.sin(angle + robot_a)]
+            [force_x, force_y] = [force_x + magnitude*obs_x/distance, force_y + magnitude*obs_y/distance]
+            j += 1
+    if j!=0:
+        [force_x, force_y] = [force_x/j, force_y/j]   
     return [force_x, force_y]
 
 def callback_pot_fields_goal(msg):
