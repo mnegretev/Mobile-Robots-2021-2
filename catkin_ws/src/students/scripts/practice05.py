@@ -91,7 +91,7 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
         aux+=1
         if laser_readings>d0:
             force_x+=(math.sqrt((1/laser_readings[i])**2+(1/0.5)**2))*((math.cos(robot_a)-robot_x)/abs(math.cos(robot_a)-robot_x))
-            force_x+=(math.sqrt((1/laser_readings[i])**2+(1/0.5)**2))*((math.cos(robot_a)-robot_x)/abs(math.cos(robot_a)-robot_x))
+            force_y+=(math.sqrt((1/laser_readings[i])**2+(1/0.5)**2))*((math.sen(robot_a)-robot_y)/abs(math.sen(robot_a)-robot_y))
         else:
             force_x=0
             force_y=0
