@@ -1,0 +1,5 @@
+source devel/setup.bash
+roslaunch bring_up only_base.launch
+
+source devel/setup.bash
+rosrun students practiceXX.py
