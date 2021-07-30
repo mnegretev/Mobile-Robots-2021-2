@@ -205,7 +205,7 @@
       <velocity_decay/>
       <velocity_decay/>
       <velocity_decay/>
-      <sensor name='hokuyo_sensor' type='gpu_ray'>
+      <sensor name='hokuyo_sensor' type='ray'>
         <visualize>1</visualize>
         <update_rate>10</update_rate>
         <ray>
