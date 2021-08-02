@@ -49,13 +49,13 @@ geometry_msgs::PoseArray get_initial_distribution(int N, float min_x, float max_
      * given by (0,0,sin(theta/2), cos(theta/2)). 
      */
     for (size_t i=0;i<N;i++)
-            {
-                particles.poses[i].position.x=rnd.uniformReal(min_x,max_x);
-                particles.poses[i].position.y=rnd.uniformReal(min_y,max_y);
-                float theta=rnd.uniformReal(min_a,max_a);
-                particles.poses[i].orientation.w=cos(theta/2);
-                particles.poses[i].orientation.z=sin(theta/2);
-            }
+    {
+        particles.poses[i].position.x=rnd.uniformReal(min_x,max_x);
+        particles.poses[i].position.y=rnd.uniformReal(min_y,max_y);
+        float theta=rnd.uniformReal(min_a,max_a);
+        particles.poses[i].orientation.w=cos(theta/2);
+        particles.poses[i].orientation.z=sin(theta/2);
+    }
             
     return particles;
 }
@@ -156,7 +156,7 @@ int random_choice(std::vector<float>& weights)
             x-=weights[i];
         }
     }
-    return -1;
+    
 }
 
 geometry_msgs::PoseArray resample_particles(geometry_msgs::PoseArray& particles, std::vector<float>& weights)
@@ -304,7 +304,7 @@ int main(int argc, char** argv)
     float init_max_x = 2;
     float init_max_y = 2;
     float init_max_a = 1;
-    float number_of_particles = 200;
+    float number_of_particles = 100;
     if(ros::param::has("~n"))
         ros::param::get("~n", number_of_particles);
     if(ros::param::has("~max_x"))
