@@ -12,14 +12,14 @@ import numpy
 import cv2
 import ros_numpy
 import rospy
+import math
 from sensor_msgs.msg import PointCloud2
 from geometry_msgs.msg import PointStamped
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "ROJAS MOSQUEDA AXEL JAVIER"
 
 def segment_by_color(img_bgr, points):
     #
-    # TODO:
     # - Change color space from RGB to HSV.
     #   Check online documentation for cv2.cvtColor function
     # - Determine the pixels whose color is in the color range of the ball.
@@ -34,10 +34,27 @@ def segment_by_color(img_bgr, points):
     # [img_c, img_r] is the centroid of the segmented region in image coordinates.
     # [x,y,z] is the centroid of the segmented region in cartesian coordinate. 
     #
-    print(img_bgr[100, 300])
-    print(points[100,300])
-    return [100,100,0,0,0.3]
-    #return [img_c, img_r, x,y,z]
+    img_hsv=cv2.cvtColor(img_bgr,cv2.COLOR_BGR2HSV)
+    img_bin=cv2.inRange(img_hsv,(28,230,127),(32,255,255))
+    indices=cv2.findNonZero(img_bin)
+    cv2.imshow("Esta es la imagen binaria",img_bin)
+    [img_x, img_y, a, b]=cv2.mean(indices)
+    [x,y,z,counter]=[0,0,0,0]
+    
+    for [[c,r]] in indices:#Voy a buscar las coordenadas para los puntos de la imagen binaria o segmentada
+        xt=points[r,c][0]#Coordenada en x
+        yt=points[r,c][0]#Coordenada en y
+        zt=points[r,c][0]#Coordenada en z
+        if math.isnan(xt) or math.isnan(yt) or math.isnan(zt):
+            continue
+        [x,y,z,counter]=[x+xt,y+yt,z+zt,counter+1]
+    
+    x=x/counter if counter>0 else 0
+    y=y/counter if counter>0 else 0
+    z=z/counter if counter>0 else 0
+
+    return [img_x,img_y,x,y,z]
+    
 
 def callback_point_cloud(msg):
     global pub_point
