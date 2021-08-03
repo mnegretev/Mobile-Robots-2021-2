@@ -1,3 +1,5 @@
 *~
 *.pyc
 *.user
+PushChanges.py
+PullChanges.py
