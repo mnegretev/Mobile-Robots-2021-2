@@ -43,8 +43,8 @@ def segment_by_color(img_bgr, points):
     
     for [[c,r]] in indices:#Voy a buscar las coordenadas para los puntos de la imagen binaria o segmentada
         xt=points[r,c][0]#Coordenada en x
-        yt=points[r,c][0]#Coordenada en y
-        zt=points[r,c][0]#Coordenada en z
+        yt=points[r,c][1]#Coordenada en y
+        zt=points[r,c][2]#Coordenada en z
         if math.isnan(xt) or math.isnan(yt) or math.isnan(zt):
             continue
         [x,y,z,counter]=[x+xt,y+yt,z+zt,counter+1]
