@@ -162,10 +162,12 @@ def get_robot_pose(listener):
         robot_a = 2*math.atan2(rot[2], rot[3])
         if robot_a > math.pi:
             robot_a -= 2*math.pi
+        elif robot_a<=-math.pi:
+                robot_a += 2*math.pi
         return robot_x, robot_y, robot_a
     except:
         pass
-    return None
+    
 
 def callback_scan(msg):
     global laser_readings
