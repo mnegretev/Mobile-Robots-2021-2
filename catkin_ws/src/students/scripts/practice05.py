@@ -40,10 +40,10 @@ def calculate_control(robot_x, robot_y, robot_a, goal_x, goal_y):
     # and return it (check online documentation for the Twist message).
     # Remember to keep error angle in the interval (-pi,pi]
     #
-    alpha = 0.1    
-    beta = 0.1     
-    v_max = 0.5  
-    w_max = 1    
+    alpha = 0.6    
+    beta = 0.6    
+    v_max = 0.6  
+    w_max = 1.0    
 
     error_a = math.atan2(goal_y -robot_y, goal_x - robot_x) - robot_a
     if error_a > math.pi:
@@ -90,17 +90,19 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
     force_x = 0
     force_y = 0
     count = 0
-    beta = 1
-    d0 = 1
+    beta = 4.0
+    d0 = 2
     
     for i in range(len(laser_readings)):
-        if (laser_readings[i][0] > d0): 
-            count = count + 1
+        count = count + 1
+        if (laser_readings[i][0] < d0 and laser_readings[i][0] !=0): 
+            
             magnitud = beta*math.sqrt((1/laser_readings[i][0]) - (1/d0))
-            obsx = math.cos(laser_readings[i][1] + robot_a) 
-            obsy = math.sin(laser_readings[i][1] + robot_a)
-            force_x = force_x + magnitud*(obsx/laser_readings[i][0])
-            force_y = force_y + magnitud*(obsy/laser_readings[i][0])
+            x = math.cos(laser_readings[i][1] + robot_a) /laser_readings[1][0]
+            y = math.sin(laser_readings[i][1] + robot_a)/laser_readings[1][0]
+            force_x = force_x + magnitud*(x)
+            force_y = force_y + magnitud*(y)
+      
 
     if (count > 0):
         force_x = force_x/count
@@ -153,6 +155,7 @@ def callback_pot_fields_goal(msg):
         [px, py] = [robot_x - epsilon*fx,robot_y -epsilon*fy]
         msg_cmd_vel = calculate_control(robot_x, robot_y, robot_a,px,py)
         pub_cmd_vel.publish(msg_cmd_vel)
+        draw_force_markers(robot_x, robot_y, fax, fay, frx, fry, fx, fy, pub_markers)
         loop.sleep()
         robot_x, robot_y, robot_a = get_robot_pose(listener)
         dist_to_goal = math.sqrt((goal_x - robot_x)**2 + (goal_y - robot_y)**2)
