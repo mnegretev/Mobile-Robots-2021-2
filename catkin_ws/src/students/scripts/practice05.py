@@ -42,8 +42,8 @@ def calculate_control(robot_x, robot_y, robot_a, goal_x, goal_y):
     cmd_vel = Twist()
     alpha = 0.1
     beta = 0.1
-    v_max = 0.5
-    w_max = 2*math.pi
+    v_max = 0.2
+    w_max = 0.5
     error_a = math.atan2(goal_y - robot_y, goal_x - robot_x) - robot_a 
     if error_a > math.pi:
         error_a -= 2*math.pi
@@ -63,9 +63,9 @@ def attraction_force(robot_x, robot_y, goal_x, goal_y):
     # where force_x and force_y are the X and Y components
     # of the resulting attraction force w.r.t. map.
     #
-    alpha=2
-    force_x=(alpha/math.sqrt((robot_x-goal_x)**2+(robot_y-goal_y)**2))*(robot_x-goal_x)
-    force_y=(alpha/math.sqrt((robot_x-goal_x)**2+(robot_y-goal_y)**2))*(robot_y-goal_y)
+    alpha = 2
+    force_x = (alpha/math.sqrt((robot_x-goal_x)**2+(robot_y-goal_y)**2))*(robot_x-goal_x)
+    force_y = (alpha/math.sqrt((robot_x-goal_x)**2+(robot_y-goal_y)**2))*(robot_y-goal_y)
 
     return [force_x, force_y]
 
@@ -81,29 +81,26 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
     # where force_x and force_y are the X and Y components
     # of the resulting rejection force w.r.t. map.
     #
-    force_x=0
-    force_y=0
-    d0=0.8
-    intensidad_repulsion=3
-    i=0
+
+    [force_x, force_y] = [0,0]
+    d0 = 0.8
+    rejec = 3
+    i = 0
     
-    for lectura_ls in laser_readings:
-        d=lectura_ls[0]
-        
+    for lec in laser_readings:
+        d = lec[0]
         
         if d>0 and d<d0 and np.isfinite(d) and not np.isnan(d):
-            i+=1  
-            theta_obs=robot_a+lectura_ls[1]
-            punto_obs_x=robot_x+d*math.cos(theta_obs)
-            punto_obs_y=robot_y+d*math.sin(theta_obs)
-            force_x+=((intensidad_repulsion*math.sqrt((1/d)-(1/d0)))/d)*(punto_obs_x-robot_x)
-            force_y+=((intensidad_repulsion*math.sqrt((1/d)-(1/d0)))/d)*(punto_obs_y-robot_y)
+            i += 1  
+            obs_x = robot_x + d*math.cos(robot_a + lec[1])
+            obs_y = robot_y + d*math.sin(robot_a + lec[1])
+            force_x += ((rejec*math.sqrt((1/d) - (1/d0)))/d)*(obs_x-robot_x)
+            force_y += ((rejec*math.sqrt((1/d) - (1/d0)))/d)*(obs_y-robot_y)
         else:
             pass
 
     if i!=0:
-        force_x=force_x/i
-        force_y=force_y/i
+        [force_x, force_y] = [force_x/i, force_y/i]
     
     return [force_x, force_y]
 
@@ -140,21 +137,22 @@ def callback_pot_fields_goal(msg):
     #     Update robot position by calling robot_x, robot_y, robot_a = get_robot_pose(listener)
     #     Recalculate distance to goal position
     #  Publish a zero speed (to stop robot after reaching goal point)
-    epsilon=0.5
-    tolerance=0.1
+
+    epsilon = 0.5
+    tolerance = 0.1
     robot_x, robot_y, robot_a = get_robot_pose(listener)
-    dist_to_goal=math.sqrt((goal_x - robot_x)**2 + (goal_y - robot_y)**2)
+    dist_to_goal = math.sqrt((goal_x - robot_x)**2 + (goal_y - robot_y)**2)
     while dist_to_goal>tolerance or rospy.is_shutdown():
         [fax, fay] = attraction_force(robot_x, robot_y, goal_x, goal_y)
         [frx, fry] = rejection_force (robot_x, robot_y, robot_a, laser_readings)
-        [fx,fy]=[fax+frx,fay+fry]
-        [px,py]=[robot_x-epsilon*fx,robot_y-epsilon*fy]
-        msg_cmd_vel=calculate_control(robot_x,robot_y,robot_a,px,py)
+        [fx, fy] = [fax+frx, fay+fry]
+        [px, py] = [robot_x-epsilon*fx, robot_y-epsilon*fy]
+        msg_cmd_vel = calculate_control(robot_x,robot_y,robot_a,px,py)
         pub_cmd_vel.publish(msg_cmd_vel)
         draw_force_markers(robot_x, robot_y, fax, fay, frx, fry, fx, fy, pub_markers)
         loop.sleep()
         robot_x, robot_y, robot_a = get_robot_pose(listener)
-        dist_to_goal=math.sqrt((goal_x - robot_x)**2 + (goal_y - robot_y)**2)
+        dist_to_goal = math.sqrt((goal_x - robot_x)**2 + (goal_y - robot_y)**2)
 
     pub_cmd_vel.publish(Twist())
     print("Goal point reached")
