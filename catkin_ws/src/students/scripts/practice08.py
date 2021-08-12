@@ -16,7 +16,7 @@ import rospy
 from sensor_msgs.msg import PointCloud2
 from geometry_msgs.msg import PointStamped
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "COLOHUA_CARVAJAL"
 
 def segment_by_color(img_bgr, points):
     #
@@ -39,13 +39,13 @@ def segment_by_color(img_bgr, points):
     #   Example: 'points[240,320][1]' gets the 'y' value of the point corresponding to
     #   the pixel in the center of the image.
     [x,y,z, counter] = [0,0,0,0]
-    for ([c,r]) in indices:
+    for [[c,r]] in indices:
         xt = points[r,c][0]
         yt = points[r,c][1]
         zt = points[r,c][2]
         if math.isnan(xt) or math.isnan(yt) or math.isnan(zt):
             continue
-        [x,y,z] = [x+xt, y+yt,z+zt,counter+1]
+        [x,y,z,counter] = [x+xt, y+yt,z+zt,counter+1]
     x = x/counter if counter > 0 else 0
     y = y/counter if counter > 0 else 0
     z = z/counter if counter > 0 else 0
@@ -54,10 +54,10 @@ def segment_by_color(img_bgr, points):
     # [img_c, img_r] is the centroid of the segmented region in image coordinates.
     # [x,y,z] is the centroid of the segmented region in cartesian coordinate. 
     #
-    print(img_bgr[100, 300])
-    print(points[100,300])
-    return [img_x,imgy,0,0,0.3]
-    #return [img_c, img_r, x,y,z]
+    #print(img_bgr[100, 300])
+    #print(points[100,300])
+    #return [img_x,imgy,0,0,0.3]
+    return [img_x, img_y, x,y,z]
 
 def callback_point_cloud(msg):
     global pub_point
