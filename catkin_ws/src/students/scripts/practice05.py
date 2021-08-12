@@ -19,7 +19,7 @@ from visualization_msgs.msg import Marker
 from sensor_msgs.msg import LaserScan
 
 NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
-NAME = "CARRANZA CASTILLO"
+NAME = "CARRANZA_CASTILLO"
 listener    = None
 pub_cmd_vel = None
 pub_markers = None
@@ -42,27 +42,19 @@ def calculate_control(robot_x, robot_y, robot_a, goal_x, goal_y):
     # Remember to keep error angle in the interval (-pi,pi]
     #
 
-    v_max = 0.8
-    w_max = 1.0
-    alpha = 0.4
-    beta = 0.4
-
-    mov_dir = math.atan2(goal_y-robot_y, goal_x-robot_x)
-    if mov_dir < 0:
-        mov_dir += 2*math.pi
-    robot_dir = robot_a
-    if robot_dir < 0:
-        robot_dir += 2*math.pi
-
-    error_a = mov_dir - robot_dir
-    if error_a > math.pi:
-        error_a -= 2*math.pi
-    if error_a < -math.pi:
-        error_a += 2*math.pi
-
-    #print(error_a)
-    cmd_vel.linear.x = v_max*math.exp(-error_a*error_a/alpha)
-    cmd_vel.angular.z = w_max*(2/(1 + math.exp(-error_a/beta)) - 1)
+    v_max=0.8
+    w_max=2
+    alpha=2
+    beta=0.5
+    error_a=math.atan2(goal_y-robot_y, goal_x-robot_x)-robot_a
+    if(error_a>math.pi):
+    	error_a=error_a-2*math.pi
+    if(error_a<-math.pi):
+    	error_a=error_a+2*math.pi
+    v=v_max*math.exp(-error_a*error_a/alpha)
+    w = w_max*(2/(1 + math.exp(-error_a/beta)) - 1)
+    cmd_vel.linear.x=v
+    cmd_vel.angular.z=w
     return cmd_vel
 
 def attraction_force(robot_x, robot_y, goal_x, goal_y):
@@ -74,10 +66,11 @@ def attraction_force(robot_x, robot_y, goal_x, goal_y):
     # of the resulting attraction force w.r.t. map.
     #
 
-    alpha = 1.0
-    magnitude = math.sqrt((robot_x - goal_x)**2 + (robot_y - goal_y)**2)
-    return [alpha*(robot_x - goal_x)/magnitude, alpha*(robot_y - goal_y)/magnitude]
-
+    alfa=1
+    mag= math.sqrt((goal_x - robot_x)**2 + (goal_y - robot_y)**2)
+    force_x=alfa*(robot_x-goal_x)/mag
+    force_y=alfa*(robot_y-goal_y)/mag
+    return [force_x, force_y]
 
 def rejection_force(robot_x, robot_y, robot_a, laser_readings):
     #
@@ -91,16 +84,25 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
     # where force_x and force_y are the X and Y components
     # of the resulting rejection force w.r.t. map.
     #
-    beta = 6.0
-    d0 = 2.0
-    sum_fx = 0.0
-    sum_fy = 0.0
-    for reading in laser_readings:
-        if reading[0] < d0:
-            total_laser_angle = robot_a + reading[1]
-            sum_fx += beta*math.sqrt(1/reading[0] - 1/d0)*(math.cos(total_laser_angle)) #*(reading[0]*math.cos(total_laser_angle))/reading[0]
-            sum_fy += beta*math.sqrt(1/reading[0] - 1/d0)*(math.sin(total_laser_angle))
-    return [sum_fx/len(laser_readings), sum_fy/len(laser_readings)]
+
+    count=0
+    beta=1
+    d0=1
+    force_x=0
+    force_y=0
+    for i in range (len(laser_readings)):
+    	[d, angle]=laser_readings[i]
+    	if d0>d:
+    		count=count+1
+    		mag=beta*math.sqrt(1/d-1/d0)
+    		obsx=math.cos(angle+robot_a)
+    		obsy=math.sin(angle+robot_a)
+    		force_x=force_x+mag*obsx/d
+    		force_y=force_y+mag*obsy/d
+    if count>0:
+    	force_x=force_x/count
+    	force_y=force_y/count
+    return [force_x, force_y]
 
 def callback_pot_fields_goal(msg):
     goal_x = msg.pose.position.x

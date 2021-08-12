@@ -47,8 +47,6 @@ geometry_msgs::PoseArray get_initial_distribution(int N, float min_x, float max_
      * For the Euler angles (roll, pitch, yaw) = (0,0,theta) the corresponding quaternion is
      * given by (0,0,sin(theta/2), cos(theta/2)). 
      */
-
-
     for(size_t i=0; i<N; i++)
     {
         particles.poses[i].position.x = rnd.uniformReal(min_x, max_x);
@@ -101,15 +99,15 @@ void move_particles(geometry_msgs::PoseArray& particles, float delta_x, float de
      * is the orientation of the i-th particle.
      * Add gaussian noise to each new position. Use MOVEMENT_NOISE as covariances. 
      */
-     for(size_t i=0; i<particles.poses.size(); i++)
-     {
+    for(size_t i=0; i<particles.poses.size(); i++)
+    {
         float a = 2*atan2(particles.poses[i].orientation.z, particles.poses[i].orientation.w);
         particles.poses[i].position.x += delta_x*cos(a) - delta_y*sin(a) + rnd.gaussian(0, MOVEMENT_NOISE);
         particles.poses[i].position.y += delta_x*sin(a) + delta_y*cos(a) + rnd.gaussian(0, MOVEMENT_NOISE);
         a += delta_t + rnd.gaussian(0, MOVEMENT_NOISE);
         particles.poses[i].orientation.w = cos(a/2);
         particles.poses[i].orientation.z = sin(a/2);
-     }
+    }
 }
 
 bool check_displacement(geometry_msgs::Pose2D& robot_pose, geometry_msgs::Pose2D& delta_pose)
