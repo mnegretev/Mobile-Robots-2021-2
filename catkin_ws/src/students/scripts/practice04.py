@@ -19,7 +19,7 @@ from nav_msgs.srv import GetPlanRequest
 from geometry_msgs.msg import Twist
 from geometry_msgs.msg import PoseStamped
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "ALVARADO_ESQUIVEL"
 
 pub_cmd_vel = None
 loop        = None
@@ -32,8 +32,17 @@ def calculate_control(robot_x, robot_y, robot_a, goal_x, goal_y):
     # TODO:
     # Implement the control law given by:
     #
-    # v = v_max*math.exp(-error_a*error_a/alpha)
-    # w = w_max*(2/(1 + math.exp(-error_a/beta)) - 1)
+    v_max = 0.5
+    w_max = 1
+    error_a = math.atan2( goal_y - robot_y , goal_x - robot_x)  - robot_a
+    if error_a > math.pi:
+        error_a = error_a - 2*math.pi
+    elif error_a <= -math.pi:
+        error_a = error_a + 2*math.pi
+    alpha = 0.2
+    beta = 0.2
+    v = v_max*math.exp(-error_a*error_a/alpha)
+    w = w_max*(2/(1 + math.exp(-error_a/beta)) - 1)
     #
     # where error_a is the angle error and
     # v and w are the linear and angular speeds taken as input signals
@@ -42,7 +51,8 @@ def calculate_control(robot_x, robot_y, robot_a, goal_x, goal_y):
     # and return it (check online documentation for the Twist message).
     # Remember to keep error angle in the interval (-pi,pi]
     #
-    
+    cmd_vel.linear.x = v
+    cmd_vel.angular.z= w
     return cmd_vel
 
 def follow_path(path):
@@ -51,28 +61,40 @@ def follow_path(path):
     # Use the calculate_control function to move the robot along the path.
     # Path is given as a sequence of points [[x0,y0], [x1,y1], ..., [xn,yn]]
     # The publisher for the twist message is already declared as 'pub_cmd_vel'
-    # You can use the following steps to perform the path tracking:
-    #
+   
     # Set local goal point as the first point of the path
+    idx = 0
+    [local_x,local_y] = path[idx]
     # Set global goal point as the last point of the path
-    # Get robot position with [robot_x, robot_y, robot_a] = get_robot_pose(listener)
+    [global_x, global_y] = path[-1]
+    # Get robot position with 
+    [robot_x, robot_y, robot_a] = get_robot_pose(listener)
     # Calculate global error as the magnitude of the vector from robot pose to global goal point
+    global_error = math.sqrt((global_x - robot_x)**2 + (global_y - robot_y)**2)
     # Calculate local  error as the magnitude of the vector from robot pose to local  goal point
-    #
+    local_error = math.sqrt((local_x - robot_x)**2 + (local_y - robot_y)**2)
     # WHILE global error > tolerance  and not rospy.is_shutdown() #This keeps the program aware of signals such as Ctrl+C
-    #     Calculate control signals v and w and publish the corresponding message
-    #     loop.sleep()  #This is important to avoid an overconsumption of processing time
-    #     Get robot position
-    #     Calculate local error
-    #     If local error is less than 0.3 (you can change this constant)
-    #         Change local goal point to the next point in the path
-    #     Calculate global error
+    while global_error > 0.1 and not rospy.is_shutdown():#error global mayor a 10cm
+        #Calculate control signals v and w and publish the corresponding message
+        pub_cmd_vel.publish(calculate_control(robot_x, robot_y, robot_a, local_x, local_y))
+        #loop.sleep()  #This is important to avoid an overconsumption of processing time
+        loop.sleep()#se espera 50ms=20Hz
+        #     Get robot position
+        [robot_x, robot_y, robot_a] = get_robot_pose(listener)
+        #Calculate local error 
+        local_error= math.sqrt((local_x - robot_x)**2 + (local_y - robot_y)**2)
+        #If local error is less than 0.3 (you can change this constant)
+        idx = min(idx +1, len(path)-1) if local_error < 0.3 else idx
+        #Change local goal point to the next point in the path
+        [local_x,local_y] = path[idx]
+        #Calculate global error
+        global_error = math.sqrt((global_x - robot_x)**2 + (global_y - robot_y)**2)
     # Send zero speeds (otherwise, robot will keep moving after reaching last point)
-    #
+    pub_cmd_vel.publish(Twist())
     return
     
 def callback_global_goal(msg):
-    print "Calculatin path from robot pose to " + str([msg.pose.position.x, msg.pose.position.y])
+    print ("Calculatin path from robot pose to " + str([msg.pose.position.x, msg.pose.position.y]))
     clt_plan_path = rospy.ServiceProxy('/navigation/path_planning/a_star_search', GetPlan)
     [robot_x, robot_y, robot_a] = get_robot_pose(listener)
     req = GetPlanRequest()
@@ -81,11 +103,10 @@ def callback_global_goal(msg):
     req.goal.pose.position.x  = msg.pose.position.x
     req.goal.pose.position.y  = msg.pose.position.y
     path = clt_plan_path(req).plan
-    print "Following path with " + str(len(path.poses)) + " points..."
+    print ("Following path with " + str(len(path.poses)) + " points...")
     path =[[p.pose.position.x, p.pose.position.y] for p in path.poses]
     follow_path(path)
-    print "Global goal point reached"
-
+    print ("Global goal point reached")
 def get_robot_pose(listener):
     try:
         (trans, rot) = listener.lookupTransform('map', 'base_link', rospy.Time(0))
@@ -101,7 +122,7 @@ def get_robot_pose(listener):
 
 def main():
     global pub_cmd_vel, loop, listener
-    print "PRACTICE 04 - " + NAME
+    print ("PRACTICE 04 - " + NAME)
     rospy.init_node("practice04")
     rospy.Subscriber('/move_base_simple/goal', PoseStamped, callback_global_goal)
     pub_cmd_vel = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
@@ -116,4 +137,3 @@ if __name__ == '__main__':
         main()
     except rospy.ROSInterruptException:
         pass
-    

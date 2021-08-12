@@ -17,7 +17,7 @@ import rospy
 import rospkg
 from cv_bridge import CvBridge, CvBridgeError
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "ALVARADO_ESQUIVEL"
 
 def evaluate(weights, image):
     #
