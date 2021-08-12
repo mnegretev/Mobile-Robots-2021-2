@@ -139,8 +139,8 @@ def callback_pot_fields_goal(msg):
     robot_x, robot_y, robot_a = get_robot_pose(listener)
     distance_to_goal = math.sqrt((goal_x - robot_x)**2+ (goal_y-robot_y)**2)
     while distance_to_goal >tolerance and not rospy.is_shutdown():
-        fax, fay = attraction_force(robot_x, robot_y, goal_x, goal_y)
-        frx, fry = rejection_force(robot_x, robot_y,robot_a, laser_readings)
+        [fax, fay] = attraction_force(robot_x, robot_y, goal_x, goal_y)
+        [frx, fry] = rejection_force(robot_x, robot_y,robot_a, laser_readings)
         [fx , fy]  =[fax + frx, fay + fry]
         [px , py]  = [robot_x - epsilon*fx, robot_y- epsilon*fy]
         msg_cmd_vel =  calculate_control(robot_x, robot_y, robot_a, px, py)
