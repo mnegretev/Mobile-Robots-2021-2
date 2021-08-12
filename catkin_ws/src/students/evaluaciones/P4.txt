@@ -1,3 +1,8 @@
 La práctica 4 no funciona.
 Hay un error en la línea 92. La función para publicar está mal escrita. 
 Calificación: 5
+
+
+Corrección.
+La práctica funciona correctamente.
+Se califica sobre 7 por entrega tardía.
