@@ -17,7 +17,7 @@ import rospy
 import rospkg
 from cv_bridge import CvBridge, CvBridgeError
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "PEREZ_VASQUEZ_CARLOS"
 
 def evaluate(weights, image):
     #
@@ -25,8 +25,10 @@ def evaluate(weights, image):
     # Calculate the output of perceptron given an image.
     # Use of numpy.dot is strongly recommended to save execution time.
     # Return perceptron output.
-    #    
-    return 0.5
+
+    producto_p =  numpy.dot(weights, image)
+    producto_p = 1 / (1 + math.exp(-1 * producto_p))  
+    return producto_p 
 
 def train_perceptron(weights, images, labels, desired_digit):
     print "Training perceptron for digit " + str(desired_digit) + " with " + str(len(images)) + " images. "
@@ -57,6 +59,22 @@ def train_perceptron(weights, images, labels, desired_digit):
     #     weights = weights - epsilon*gradient
     #     attempts = attempts - 1
     #     
+    m_grad = 1
+
+    while m_grad > tol and attempts > 0 and not rospy.is_shutdown():
+        gradient = numpy.zeros(len(weights))
+        i = 0
+        for x in inputs:
+            y_hat = evaluate(weights,x) 
+            y     = 1 if(labels[i] == desired_digit) else 0 
+            g_j   = x * (y_hat - y) * (y_hat * (1 - y_hat))
+            gradient = gradient + g_j 
+            i += 1
+        m_grad = numpy.linalg.norm(gradient) 
+        weights = numpy.add(weights, -epsilon * gradient) 
+        attempts = attempts - 1
+        print(attempts)
+
     return weights
 
 def load_dataset_digit(file_name):
