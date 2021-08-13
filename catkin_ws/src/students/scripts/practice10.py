@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+#
+# AUTONOMOUS MOBILE ROBOTS - UNAM, FI, 2021-2
+# PRACTICE 10
 import cv2
 import sys
 import random
@@ -35,10 +38,8 @@ class NeuralNetwork(object):
 
     def feedforward_verbose(self, x):
         #
-        # TODO:
-        # Return a list containing the output of each layer.
-        # You can use as example the function 'feedforward' and store 'x' in each iteration.
-        # Store input 'x' as the output of the first layer (the input layer)
+        # This function gets the output of the network when input is 'x'.
+        # Returns a list containing the output of each layer.
         #
         y = []
         y.append(x)
@@ -50,26 +51,22 @@ class NeuralNetwork(object):
 
     def backpropagate(self, x, yt):
         #
-        # TODO:
-        # Return a tuple (nabla_w, nabla_b) containing the gradient of cost function C with respect to
+        # Thir function returns a tuple (nabla_w, nabla_b) containing the gradient of cost function C w.r.t
         # each weight and bias of all the network. The gradient is calculated assuming only one training
         # example is given. The training example is given by the input 'x' and the corresponding label 'y'.
-        # nabla_w and nabla_b should have the same dimensions as the corresponding
-        # self.weights and self.biases
         #
         y = self.feedforward_verbose(x)
         nabla_b = [numpy.zeros(b.shape) for b in self.biases]
         nabla_w = [numpy.zeros(w.shape) for w in self.weights]
-
-        #
-        # Calcualte delta for the output layer L
-        # nabla_b of output layer = delta      nabla_b[-1] = delta
-        # nabla_w of output layer = delta*ouputs_of_layer_L-1    nabla_w[-1] = delta*y[-2].transpose()
-        # FOR all layers 'l' from L-1 to first one: for l in range(2, num_layers)
-        #     delta = (WT * delta)*yl*(1 - yl)  where 'WT' is the transpose of the matrix of weights of layer l+1 and 'yl' is the output of layer l
-        #     nabla_b[-l] = delta
-        #     nabla_w[-l] = delta*ylT  where ylT is the transpose of outputs vector of layer l-1
-        #
+        delta = (y[-1] - yt)*y[-1]*(1 - y[-1])
+        nabla_b[-1] = delta
+        nabla_w[-1] = delta*y[-2].transpose()
+        
+        for i in range(2, self.num_layers):
+            delta = numpy.dot(self.weights[-i+1].transpose(), delta)*y[-i]*(1.0 - y[-i])
+            nabla_b[-i] = delta
+            nabla_w[-i] = numpy.dot(delta,y[-i-1].transpose())
+        
         return nabla_w, nabla_b
 
     def update_with_batch(self, batch, eta):
@@ -81,12 +78,14 @@ class NeuralNetwork(object):
         nabla_b = [numpy.zeros(b.shape) for b in self.biases]
         nabla_w = [numpy.zeros(w.shape) for w in self.weights]
         M = len(batch)
+        
         for x,y in batch:
             if rospy.is_shutdown():
                 break
             delta_nabla_w, delta_nabla_b = self.backpropagate(x,y)
             nabla_w = [nw+dnw for nw,dnw in zip(nabla_w, delta_nabla_w)]
             nabla_b = [nb+dnb for nb,dnb in zip(nabla_b, delta_nabla_b)]
+        
         self.weights = [w-eta*nw/M for w,nw in zip(self.weights, nabla_w)]
         self.biases  = [b-eta*nb/M for b,nb in zip(self.biases , nabla_b)]
         return nabla_w, nabla_b
