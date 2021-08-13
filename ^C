@@ -1,0 +1,56 @@
+[33mcommit e1a02babb389d3951aeafe7bd745859c6c0795b5[m[33m ([m[1;36mHEAD -> [m[1;32morozco_garcia[m[33m, [m[1;31morigin/orozco_garcia[m[33m, [m[1;32mmaster[m[33m)[m
+Author: Mark The Magnificent <marco.negrete@ingenieria.unam.edu>
+Date:   Wed Mar 3 21:16:40 2021 -0600
+
+    Modify package.xml in students package
+
+[33mcommit 4d7386bd906ad09dc221d0628279effa98c47536[m[33m ([m[1;31morigin/saldana_hernandez[m[33m, [m[1;31morigin/rojas_mosqueda[m[33m, [m[1;31morigin/pastor_olivera[m[33m, [m[1;31morigin/monterrubio_lopez[m[33m, [m[1;31morigin/mendoza_suarez[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/lopez_gonzalez[m[33m, [m[1;31morigin/hernandez_luviano[m[33m, [m[1;31morigin/guzman_santiago[m[33m, [m[1;31morigin/guzman_martinez[m[33m, [m[1;31morigin/gonzalez_mendoza[m[33m, [m[1;31morigin/espinobarros_peralta[m[33m, [m[1;31morigin/colohua_carvajal[m[33m, [m[1;31morigin/carranza_castillo[m[33m, [m[1;31morigin/bautista_lopez[m[33m, [m[1;31morigin/alvarez_perez[m[33m, [m[1;31morigin/alvarado_esquivel[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Mark The Magnificent <marco.negrete@ingenieria.unam.edu>
+Date:   Tue Mar 2 15:01:30 2021 -0600
+
+    Add templates for p00 to p09
+
+[33mcommit 0fbbc6d706a8c1b224980cfaa90445f91fc84c7e[m
+Author: Mark The Magnificent <marco.negrete@ingenieria.unam.edu>
+Date:   Tue Mar 2 14:28:16 2021 -0600
+
+    Change some launch file names
+    Add files for speech recognition
+
+[33mcommit 6457a9c774aecf3718d67bd3962582aebe922840[m
+Author: Marco Negrete <marco.negrete@ingenieria.unam.edu>
+Date:   Tue Mar 2 13:16:18 2021 -0600
+
+    Update README.md
+
+[33mcommit ce54c2bb919795c6f579a48096fa775ad69e16e9[m
+Author: Marco Negrete <marco.negrete@ingenieria.unam.edu>
+Date:   Tue Mar 2 13:15:01 2021 -0600
+
+    Update README.md
+
+[33mcommit a84da6e4ad271bea7ec5f555ab851a884b5b3d2f[m
+Author: Mark The Magnificent <marco.negrete@ingenieria.unam.edu>
+Date:   Tue Feb 23 23:48:27 2021 -0600
+
+    Add ros-numpy to the installation script
+
+[33mcommit 2f6f7adc1b9edc5c4dada5119b41e796f7a5b0df[m
+Author: Mark The Magnificent <marco.negrete@ingenieria.unam.edu>
+Date:   Tue Feb 23 23:47:50 2021 -0600
+
+    Change names p07->p06 y p08->p07
+    Add ros-numpy to the installation script
+    Add last modifications  (try-catch, wait for service) to p07 and p08
+
+[33mcommit 3d886b4e097e41f4cec767e058548a030bc4a63f[m
+Author: Marco Negrete <marco.negrete@ingenieria.unam.edu>
+Date:   Tue Feb 23 16:40:18 2021 -0600
+
+    Update README.md
+
+[33mcommit c8203064440ad3fc6727af26f3d22c11aa5a339f[m
+Author: Mark The Magnificent <marco.negrete@ingenieria.unam.edu>
+Date:   Wed Jan 6 12:49:10 2021 -0600
+
+    First draft of repository
