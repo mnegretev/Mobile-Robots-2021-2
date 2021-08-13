@@ -193,7 +193,7 @@ def main():
         print("Recognized digit : " + str(numpy.argmax(y)))
         print("")
         cv2.imshow("Digit", numpy.reshape(numpy.asarray(img, dtype="float32"), (28,28,1)))
-        cv2.moveWindow('Digit', 800, 400)
+        cv2.moveWindow('Digit', 450, 350)
         cmd = cv2.waitKey(0)
         cv2.destroyAllWindows()
     cv2.destroyAllWindows()
