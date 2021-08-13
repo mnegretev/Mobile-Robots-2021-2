@@ -6,7 +6,7 @@ import numpy
 import rospy
 import rospkg
 
-NAME = "APELLIDO_PATERNO_APELLIDO_MATERNO"
+NAME = "HERNANDEZ_LUVIANO"
 
 class NeuralNetwork(object):
     def __init__(self, layer_sizes):
