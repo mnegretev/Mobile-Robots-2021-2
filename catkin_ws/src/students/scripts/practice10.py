@@ -61,6 +61,15 @@ class NeuralNetwork(object):
         y = self.feedforward_verbose(x)
         nabla_b = [numpy.zeros(b.shape) for b in self.biases]
         nabla_w = [numpy.zeros(w.shape) for w in self.weights]
+	delta = (y[-1] - yt)*y[-1]*(1 - y[-1])
+        nabla_b[-1] = delta
+        nabla_w[-1] = delta*y[-2].transpose()
+        for i in range(2, self.num_layers):
+            #delta = numpy.sum(delta)*y[-i]*(1.0 - y[-i])
+            delta = numpy.dot(self.weights[-i+1].transpose(), delta)*y[-i]*(1.0 - y[-i])
+            nabla_b[-i] = delta
+            nabla_w[-i] = numpy.dot(delta,y[-i-1].transpose())
+  
 
         #
         # Calcualte delta for the output layer L
