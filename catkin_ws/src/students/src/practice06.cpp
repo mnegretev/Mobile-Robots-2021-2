@@ -4,7 +4,7 @@
  *
  * Instructions:
  * Write the code necessary to implement localization by particle filters.
- * Modify only the sections marked with the TODO comment. 
+ * Modify only the sections marked with the TODO comment.
  */
 
 #include "ros/ros.h"
@@ -45,14 +45,14 @@ geometry_msgs::PoseArray get_initial_distribution(int N, float min_x, float max_
      * To generate uniformly distributed random numbers, you can use the funcion rnd.uniformReal(min, max)
      * Remember that orientation in a Pose message is represented by a quaternion (x,y,z,w)
      * For the Euler angles (roll, pitch, yaw) = (0,0,theta) the corresponding quaternion is
-     * given by (0,0,sin(theta/2), cos(theta/2)). 
-     */    
+     * given by (0,0,sin(theta/2), cos(theta/2)).
+     */
     for (size_t i=0; i< N ; i++){
         particles.poses[i].position.x= rnd.uniformReal(min_x, max_x);
         particles.poses[i].position.y= rnd.uniformReal(min_y, max_y);
         float theta = = rnd.uniformReal(min_a, max_a);
         particles.poses[i].orientation.w=cos(theta/2);
-        particles.poses[i].orientation.z=cos(theta/2);
+        particles.poses[i].orientation.z=sin(theta/2);
     }
     return particles;
 }
@@ -96,7 +96,7 @@ void move_particles(geometry_msgs::PoseArray& particles, float delta_x, float de
      * Displacement is given w.r.t. particles's frame, i.e., to calculate the new position for
      * each particle you need to rotate delta_x and delta_y, on Z axis, an angle theta_i, where theta_i
      * is the orientation of the i-th particle.
-     * Add gaussian noise to each new position. Use MOVEMENT_NOISE as covariances. 
+     * Add gaussian noise to each new position. Use MOVEMENT_NOISE as covariances.
      */
     for (size_t i=0; i< particles.poses.size() ; i++){
         float a = atan2(particles.poses[i].orientation.z, particles.poses[i].orientation.w)*2;
@@ -156,7 +156,7 @@ geometry_msgs::Pose2D get_robot_pose_estimation(geometry_msgs::PoseArray& partic
         p.y += particles.poses[i].position.y;
         z   += particles.poses[i].orientation.z;
         w   += particles.poses[i].orientation.w;
-        
+
     }
     p.x /= particles.poses.size();
     p.y /= particles.poses.size();
@@ -182,7 +182,7 @@ int main(int argc, char** argv)
     ros::NodeHandle n("~");
     ros::Rate loop(20);
     ros::Subscriber sub_scan      = n.subscribe("/scan", 1, callback_laser_scan);
-    ros::Publisher  pub_particles = n.advertise<geometry_msgs::PoseArray>("/particle_cloud", 1); 
+    ros::Publisher  pub_particles = n.advertise<geometry_msgs::PoseArray>("/particle_cloud", 1);
     tf::TransformListener listener;
     tf::TransformBroadcaster broadcaster;
     nav_msgs::GetMap srv_get_map;
