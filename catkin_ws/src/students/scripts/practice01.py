@@ -88,7 +88,53 @@ def a_star(start_r, start_c, goal_r, goal_c, grid_map, cost_map):
     # https://docs.python.org/2/library/heapq.html
     #
     
-    return []
+    g_values=np.full(np.shape(grid_map),sys.maxint)
+    g_values=np.full(np.shape(grid_map),sys.maxint)
+    f_values=np.full(np.shape(grid_map),sys.maxint)
+    par_nodes=np.full((np.shape(grid_map)[0],np.shape(grid_map)[1],2),-1)
+    in_open_list=np.full(np.shape(grid_map),False)
+    in_close_list=np.full(np.shape(grid_map),False)
+
+    open_list=[]
+    heapq.heappush(open_list,(0,[start_r,start_c]))
+    g_values[start_r,start_c]=0
+    f_values[start_r,start_c]=0
+    in_open_list[start_r,start_c]=True
+    [r,c]=[start_r,start_c]
+    steps=0
+    path=[]
+    while len(open_list)>0 and [r,c]!=[goal_r,goal_c]:
+        [r,c]=heapq.heappop(open_list)[1]
+        in_close_list[r,c]=True
+        neighbors=[[r+1,c],[r-1,c],[r,c+1],[r,c-1]]
+        for [nr,nc]in neighbors:
+            if grid_map[nr,nc]!=0 or in_close_list[nr,nc]:
+                continue
+            g=g_values[r,c]+1+cost_map[r,c]
+            f=g+(np.abs(goal_r-nr)+np.abs(goal_c-nc))
+            if f<f_values[nr,nc]:
+                g_values[nr,nc]=g
+                f_values[nr,nc]=f
+                par_nodes[nr,nc]=[r,c]
+            if not in_open_list[nr,nc]:
+                in_open_list[nr,nc]=True
+                heapq.heappush(open_list,(f,[nr,nc]))
+            steps+=1
+
+    if[r,c]!=[goal_r,goal_c]:
+        print("No se puede calcular por Dijsktra :c")
+
+        return[]
+
+    while [par_nodes[r,c][0],par_nodes[r,c][1]]!=[-1,-1]:
+        path.insert(0,[r,c])
+        [r,c]=par_nodes[r,c]
+    
+    print("El path ha tenido "+str(steps)+" paso calculados")
+
+    return path
+
+
 
 def get_maps():
     clt_static_map = rospy.ServiceProxy("/static_map"  , GetMap)
@@ -149,7 +195,7 @@ def callback_a_star(req):
     return generic_callback(req, 'a_star')
 
 def main():
-    print "PRACTICE 01 - " + NAME
+    print ("PRACTICE 01 - " + NAME)
     rospy.init_node("practice01")
     rospy.Service('/navigation/path_planning/dijkstra_search', GetPlan, callback_dijkstra)
     rospy.Service('/navigation/path_planning/a_star_search'  , GetPlan, callback_a_star)
