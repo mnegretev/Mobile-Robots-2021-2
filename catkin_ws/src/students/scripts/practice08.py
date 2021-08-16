@@ -79,7 +79,7 @@ def callback_point_cloud(msg):
 
 def main():
     global pub_point
-    print "PRACTICE 08 - " + NAME
+    print ("PRACTICE 08 - " + NAME)
     rospy.init_node("practice08")
     rospy.Subscriber("/kinect/points", PointCloud2, callback_point_cloud)
     pub_point = rospy.Publisher('/detected_object', PointStamped, queue_size=10)
