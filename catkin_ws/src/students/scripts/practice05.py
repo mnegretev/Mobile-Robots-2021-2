@@ -54,8 +54,8 @@ def calculate_control(robot_x, robot_y, robot_a, goal_x, goal_y):
     v = v_max*math.exp(-error_a*error_a/alpha)
     w = w_max*(2/(1 + math.exp(-error_a/beta)) - 1)
     
-    cmd_vel.linear_x=v
-    cmd_vel.linear_z=w
+    cmd_vel.linear.x=v
+    cmd_vel.linear.z=w
     
     return cmd_vel
 
@@ -95,6 +95,8 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
         else:
             force_x=0
             force_y=0
+    force_x=force_x/aux
+    force_y=force_y/aux
     return [force_x, force_y]
 
 def callback_pot_fields_goal(msg):
