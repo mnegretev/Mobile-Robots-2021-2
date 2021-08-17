@@ -132,7 +132,7 @@
     <include>
       <static>0</static>
       <uri>model://justina_simple</uri>
-      <pose>11 11.2 0.05 0 0 3.14</pose>
+      <pose>5.35 3.86 0.05 0 0 3.14</pose>
       <name>justina</name>
     </include>
     
