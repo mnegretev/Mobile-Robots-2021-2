@@ -1,0 +1,6 @@
+La práctica funciona parcialmente.
+El programa no logra localizar al robot y la posición estimada no converge.
+Esto se debe a que en la función que calcula los pesos para cada partícula,
+el promediado de las diferencias y el cálculo de la exponencial debe hacerse fuera
+del segundo ciclo for, no dentro.
+Calificación: 8
