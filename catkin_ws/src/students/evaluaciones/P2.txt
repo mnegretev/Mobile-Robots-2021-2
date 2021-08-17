@@ -3,3 +3,7 @@ La ejecución indica un error de indentación en la línea 52.
 Este error impide que el programa se ejecute.
 Después de corregir esto, la práctica funciona correctamente.
 Calificación: 7
+
+Actualización.
+La práctica funciona correctamente.
+Calificación: 10

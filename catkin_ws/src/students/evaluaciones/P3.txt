@@ -2,3 +2,7 @@ La práctica 3 no funciona correctamente.
 El programa no corre porque indica que falta incluir la biblioteca math.
 Después de incluirla, funciona correctamente.
 Calificación: 7
+
+Actualización:
+La práctica 3 funciona correctamente.
+Calificación: 10
