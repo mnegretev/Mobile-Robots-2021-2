@@ -1,0 +1,8 @@
+La práctica 5 funciona parcialmente.
+El programa no evade bien los obstáculos.
+Esto puede deberse a que en las lineas 101 y 102 se tienen expresiones del tipo:
+force_y *= 1/len(laser_readings)
+Y la expresión debería ser:
+force_y *= 1.0/len(laser_readings)
+Esto porque 1/len(..) es un cociente de enteros que da como resultado cero.
+Calificación: 7
