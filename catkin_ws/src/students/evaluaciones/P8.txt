@@ -1,0 +1,5 @@
+La práctica 8 funciona parcialmente.
+El programa segmenta bien el color pero no calcula bien la posición del objeto.
+Esto se debe a que las líneas 59, 60 y 61 están dentro del ciclo FOR y
+deberían ir fuera.
+Calificación: 8
