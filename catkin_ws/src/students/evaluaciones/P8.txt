@@ -2,3 +2,4 @@ La práctica 8 no funciona.
 El programa indica que una variable no existe:
 NameError: global name 'img_c' is not defined
 Calificación: 6
+
