@@ -1,0 +1,4 @@
+La práctica funciona parcialmente.
+Realiza bien la segmentación por color y la localización del objeto
+pero hay una return de más en la función.
+Calficación: 7
