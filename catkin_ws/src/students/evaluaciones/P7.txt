@@ -1,0 +1,4 @@
+La práctica 7 funciona correctamente.
+El programa genera correctamente la estimación inicial
+y después de algunas iteraciones, converge a la posición real del robot.
+Calificación: 10
