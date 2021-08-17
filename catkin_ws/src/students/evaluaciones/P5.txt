@@ -1,0 +1,4 @@
+La práctica 5 no funciona. El programa indica un error simpre que se ejecuta.
+El error puede deberse a que el alumno usó indiscriminadamente la biblioteca
+numpy con los nombres 'numpy' y 'np'. 
+Calificación: 6
