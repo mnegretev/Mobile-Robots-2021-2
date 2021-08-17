@@ -1,0 +1,3 @@
+La práctica 6 no funciona. 
+El programa de la práctica 6 no compila.
+Calificación: 5

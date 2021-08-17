@@ -100,7 +100,7 @@ def rejection_force(robot_x, robot_y, robot_a, laser_readings):
             sum_fy += beta*math.sqrt(1/reading[0] - 1/d0)*(math.sin(total_laser_angle))
     return [sum_fx/len(laser_readings), sum_fy/len(laser_readings)]   
     
-     return [force_x, force_y]
+
 
 
 def callback_pot_fields_goal(msg):

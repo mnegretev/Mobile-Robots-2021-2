@@ -1,0 +1,5 @@
+La práctica 5 no funciona.
+Al ejecutar el programa se tienen varios errores:
+* Error de indentación en la función que calcula la fuerza repulsiva
+* Variable que no existe en la función que calcula la ley de control.
+Calificación: 5

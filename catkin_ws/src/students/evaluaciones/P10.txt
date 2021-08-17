@@ -1,0 +1,3 @@
+La práctica 10 funciona correctamente.
+El programa entrena correctamente la red neuronal.
+Calificación: 10

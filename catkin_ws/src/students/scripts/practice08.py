@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 #
 # AUTONOMOUS MOBILE ROBOTS - UNAM, FI, 2021-2
