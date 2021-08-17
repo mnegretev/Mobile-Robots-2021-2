@@ -1,0 +1,3 @@
+La práctica 5 funciona correctamente.
+El programa evade correctamente los obstáculos.
+Calificación: 10

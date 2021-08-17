@@ -1,2 +1,2 @@
-La práctica 1 no fue entregada.
-Calificación: 0
+La práctica 1 funciona correctamente.
+Calificación: 10
