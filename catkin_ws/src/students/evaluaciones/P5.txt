@@ -1,0 +1,4 @@
+La práctica 5 no funciona.
+Al ejecutar el programa, se indica el siguiente error en la línea 90:
+TypeError: range() integer end argument expected, got list.
+Calificación: 6

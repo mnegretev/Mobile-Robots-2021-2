@@ -7,3 +7,13 @@ cmd_vel.linear.x=v
 
 Calificación: 5
 
+
+Actualización:
+La práctica sigue sin funcionar.
+Entre otros, hay un error en la línea 59.
+Dice:
+cmd_vel.linear.z=w
+Debería decir:
+cmd_vel.angular.z=w
+
+Calificación: 6
