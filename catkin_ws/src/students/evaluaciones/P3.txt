@@ -1,0 +1,5 @@
+La práctica 3 funciona parcialmente.
+El programa calcula rutas pero no toma en cuenta el mapa de costo.
+En la línea 110 hace falta incluir este costo en el cálculo del valor g
+Calificación: 8
+
