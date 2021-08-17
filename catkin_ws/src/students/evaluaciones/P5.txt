@@ -1,0 +1,6 @@
+La práctica funciona parcialmente.
+El programa presenta muchas oscilaciones y esto provoca que el robot tarde mucho en llegar.
+En un robot real, esto provocaría daños en el hardware.
+Además, en algún momento el programa arroja el error:
+"ZeroDivisionError: integer division or modulo by zero"
+Calificación: 9
